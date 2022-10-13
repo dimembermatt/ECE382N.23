@@ -6,6 +6,7 @@
 @date       2022-10-12
 """
 
+
 class ApplicationLayer:
     """_summary_
     The application layer consists of a set of devices, each of which contains
@@ -23,6 +24,11 @@ class ApplicationLayer:
         # Add a device to the application layer.
         self.devices[device_id] = device
 
+    def start(self):
+        # TODO: return a list of scheduled processes and tasks across all
+        # devices before they start.
+        pass
+
     def step(self):
         # Run each device in parallel. Step through each device and retrieve
         # their inputs/outputs.
@@ -32,6 +38,7 @@ class ApplicationLayer:
             # TODO: manage results, build dependencies
 
         # TODO: Communicate with other layers
+
 
 class ApplicationDevice:
     """_summary_
@@ -70,9 +77,10 @@ class ApplicationDevice:
         Executes a single step of the active processes and returns the output.
         """
         result = {
-            "completed_processes": {}, # dict of processes that were completed, including their start times, finish times, and their inputs/outputs.
-            "running_processes": {}
+            "completed_processes": {},  # dict of processes that were completed, including their start times, finish times, and their inputs/outputs.
+            "running_processes": {},
         }
+
 
 class ApplicationProcess:
     """_summary_
@@ -93,8 +101,13 @@ class ApplicationProcess:
 
         # TODO: figure out how to loop tasks.
 
+    def add_loop(self):
+        self.task[0].set_preceding_task(self.tasks[-1])
+        self.task[-1].set_following_task(self.tasks[0])
+
     def get_task_list(self):
         return self.tasks
+
 
 class ApplicationTask:
     """_summary_

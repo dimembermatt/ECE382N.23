@@ -13,6 +13,7 @@ from src.application_layer.application_layer import ApplicationLayer
 # from src.network_layer.network_layer import NetworkLayer
 # from src.energy_layer.energy_layer import EnergyLayer
 
+
 class Simulation:
     """_summary_
     Orchestrates communication between each layer and resolves graphical
