@@ -25,7 +25,7 @@ class Simulation:
 
 
 if __name__ == "__main__":
-    if sys.version[0] < 3:
+    if sys.version_info[0] < 3:
         raise Exception("This program only supports Python 3.")
 
     sim = Simulation()
