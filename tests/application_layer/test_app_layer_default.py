@@ -3,13 +3,12 @@
 @author     Matthew Yu (matthewjkyu@gmail.com)
 @brief      Entry point for testing the application layer of the model.
 @version    0.0.0
-@data       2022-10-13
-TODO: determine whether to use pytest or doctest or w.e. for testing framework.
+@data       2022-10-16
 """
 
-import json
 import sys
 
+sys.path.append("../../src")
 sys.path.append("../src")
 
 from application_layer.application_core import ApplicationCore
@@ -26,7 +25,7 @@ def test_default_app():
     executed.
     """
     app_layer = ApplicationLayer()
-    app_device = ApplicationDevice(resources={"cores": [ApplicationCore()], "key": [0]})
+    app_device = ApplicationDevice(device_id=0, resources={"cores": [ApplicationCore(core_id=0)], "key": [0]})
 
     app_process = ApplicationProcess(process_name="PROC1")
     app_task = ApplicationTask(
@@ -42,10 +41,9 @@ def test_default_app():
     app_process2.add_task(app_task2)
     app_device.add_process(app_process2)
 
-    app_layer.add_device(app_device.get_device_id(), app_device)
+    app_layer.add_device(app_device)
 
     # Assert that the device ID is 0.
-    print(f"APP ID: {app_device.get_device_id()}")
     assert app_device.get_device_id() == 0
 
     # Schedule the first batch of processes.
@@ -67,9 +65,6 @@ def test_default_app():
 
     # Run for 1 step.
     app_layer.step_layer()
-
-    # TODO: assert that the second timeline entry is at 5 cycles. There is one
-    # device, one core, and PROC2 with TASK2 is now assigned.
 
     # Assert the following:
     # - There are now two timeline entries.
@@ -103,7 +98,6 @@ def test_default_app():
 
     # Assert that the resources of the single device on network consists of a
     # core, and a key with a value of 2. There is only one entry in the key.
-    print(app_device.get_resources())
     assert len(app_device.get_resources()["key"]) == 1
     assert app_device.get_resources()["key"][0] == 2
 

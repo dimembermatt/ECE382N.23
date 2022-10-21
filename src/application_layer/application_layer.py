@@ -28,9 +28,12 @@ class ApplicationLayer:
         self.time_stamp_ms = 0
         self.event_timeline = []
 
-    def add_device(self, device_id, device):
+    def add_device(self, device):
         # Add a device to the application layer.
-        self.devices[device_id] = device
+        self.devices[device.get_device_id()] = device
+
+    def get_devices(self):
+        return self.devices
 
     def print_event_timeline(self):
         # Generate the event timeline.
@@ -58,10 +61,9 @@ class ApplicationLayer:
                     task_name,
                     task_duration,
                 )
-            entry[1].append(sub_entry)
+                entry[1].append(sub_entry)
 
         self.event_timeline.append(entry)
-        print(self.event_timeline)
 
     def initialize_layer(self):
         """_summary_
@@ -80,18 +82,19 @@ class ApplicationLayer:
             # Get the active process and therefore task
             for core in cores:
                 process = core.get_pinned_process()
-                task = process.get_current_task()
-                self.task_list.append(
-                    [
-                        device,
-                        core,
-                        process,
-                        task,
-                        core.convert_clock_cycles_to_time(
-                            task.get_remaining_duration()
-                        ),
-                    ]
-                )
+                if process is not None:
+                    task = process.get_current_task()
+                    self.task_list.append(
+                        [
+                            device,
+                            core,
+                            process,
+                            task,
+                            core.convert_clock_cycles_to_time(
+                                task.get_remaining_duration()
+                            ),
+                        ]
+                    )
 
         # Order task by EDF
         sorted(self.task_list, key=itemgetter(4))

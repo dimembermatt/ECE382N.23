@@ -52,6 +52,9 @@ class ApplicationTask:
 
         self.task_name = task_name
 
+        self.preceding_task = None
+        self.following_task = None
+
     def is_executable(self, resources):
         """_summary_
         Check if the task is executable by comparing available resources against
@@ -76,30 +79,49 @@ class ApplicationTask:
                 return False
         return True
 
+    def consume_inputs(self, inputs):
+        # Consume inputs from resources.
+        for [input_id, num_input_values] in self.inputs.items():
+            for i in range(num_input_values):
+                self.resources[input_id].append(inputs[input_id].pop(0))
+
+    def generate_outputs(self):
+        if self.task_remaining_duration > 0:
+            return [False, None]
+        else:
+            return [True, self.outputs]
+
     def run_task(self, clock_cycles, resources):
         """_summary_
-        Execute transformation of inputs to generate the set of outputs. Task
-        dependent code belongs here. Any amount of each input in self.inputs may
-        be utilized to generate a subset of self.outputs.
+        Runs the task.
 
         Args:
             resources (dict): Resource dict with input dependencies.
             clock_cycles (int): Number of clock cycles to run for.
         """
-        # Consume inputs from resources.
-        for [input_id, num_input_values] in self.inputs.items():
-            for i in range(num_input_values):
-                self.resources[input_id].append(resources[input_id].pop(0))
-
-        # Generate outputs based on inputs.
-        self.outputs["key"].append(self.resources["key"].pop(0) + 1)
+        if self.task_remaining_duration == self.task_duration:
+            self.consume_inputs(resources)
+            self.execution()
 
         self.task_remaining_duration -= clock_cycles
 
-        if self.task_remaining_duration > 0:
-            return [False, None]
-        else:
-            return [True, self.outputs]
+        outputs = self.generate_outputs()
+
+        if self.task_remaining_duration == 0:
+            self.task_remaining_duration = self.task_duration
+
+        return outputs
+
+    def execution(self):
+        """_summary_
+        Execute transformation of inputs to generate the set of outputs. Task
+        dependent code belongs here. Any amount of each input in self.inputs may
+        be utilized to generate a subset of self.outputs.
+        """
+        # TODO: USER DEFINED
+        # Generate outputs based on inputs.
+        key = self.resources["key"].pop(0)
+        self.outputs["key"].append(key + 1)
 
     def set_preceding_task(self, task):
         self.preceding_task = task

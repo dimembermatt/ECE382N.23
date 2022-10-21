@@ -13,13 +13,12 @@ class ApplicationCore:
     operate. This includes information about expected power usage and speed.
     """
 
-    core_id = 0
-
     def __init__(
         self,
         core_info={
             "clock_speed_hz": 1,
         },
+        core_id=0
     ):
         """_summary_
         An application core has at least the following:
@@ -31,10 +30,9 @@ class ApplicationCore:
             core_info (dict, optional): Core information. Defaults to {"clock_speed_hz": 1,}.
         """
         self.core_info = core_info
+        self.core_id = core_id
         self.pinned_process = None
 
-        self.core_id = ApplicationCore.core_id
-        ApplicationCore.core_id += 1
 
     def pin_process(self, process):
         """_summary_
@@ -82,7 +80,7 @@ class ApplicationCore:
             the device.
         """
         if self.pinned_process is None:
-            return [True, {}]
+            return [True, True, {}]
 
         # Run the process for an arbitrary amount of time. Given the device
         # core_info, we can translate this time into clock cycles.

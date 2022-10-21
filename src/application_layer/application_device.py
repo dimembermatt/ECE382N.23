@@ -21,11 +21,7 @@ class ApplicationDevice:
     Devices may have schedulers that operate on their individual processes.
     """
 
-    device_id = 0
-
-    def __init__(
-        self, resources={"cores": [ApplicationCore()]}, scheduler=ApplicationScheduler()
-    ):
+    def __init__(self, resources={"cores": []}, scheduler=ApplicationScheduler(), device_id=0):
         """_summary_
         An application device has at least the following:
          - Hardware resources, including CPUs, ADCs, DACs, transceivers, etc
@@ -36,13 +32,13 @@ class ApplicationDevice:
             to {"cores": ApplicationCore()}.
             scheduler (_type_, optional): Software scheduler used. Defaults to
             ApplicationScheduler().
+            device_id (int): Numeric ID for the device.
         """
         self.processes = []
         self.resources = resources
         self.scheduler = scheduler
 
-        self.device_id = ApplicationDevice.device_id
-        ApplicationDevice.device_id += 1
+        self.device_id = device_id
 
     def add_process(self, process):
         """_summary_
@@ -53,7 +49,7 @@ class ApplicationDevice:
         """
         self.processes.append(process)
 
-    def add_resource(self, resource_id, resource_value):
+    def add_resource(self, resources):
         """_summary_
         Adds a resource of a given key to the device.
 
@@ -61,10 +57,11 @@ class ApplicationDevice:
             resource_id (key): Dict key.
             resource_value (list): list of values that need to be added.
         """
-        if resource_id in self.resources:
-            self.resources[resource_id].extend(resource_value)
-        else:
-            self.resources[resource_id] = resource_value
+        for resource_id, resource_values in resources.items():
+            if resource_id not in self.resources:
+                self.resources[resource_id] = []
+            self.resources[resource_id].extend(resource_values)
+            resource_values.clear()
 
     def get_processes(self):
         """_summary_
@@ -117,10 +114,9 @@ class ApplicationDevice:
                 )
                 # If the current task is done, merge outputs back into device resources.
                 if is_task_completed:
-                    for [resource_id, resource_value] in outputs.items():
-                        # TODO: add support for resources that must be routed to
-                        # other layers.
-                        self.add_resource(resource_id, resource_value)
+                    # TODO: add support for resources that must be routed to
+                    # other layers.
+                    self.add_resource(outputs)
                 # If the current process is done, reschedule the core.
                 if is_process_completed:
                     self.schedule()
