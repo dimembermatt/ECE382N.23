@@ -101,6 +101,7 @@ def test_default_app():
     assert len(app_device.get_resources()["key"]) == 1
     assert app_device.get_resources()["key"][0] == 2
 
+    print(event_timeline)
 
 if __name__ == "__main__":
     if sys.version_info[0] < 3:
