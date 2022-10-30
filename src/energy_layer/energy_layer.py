@@ -8,7 +8,8 @@
 
 import sys
 
-sys.path.append('../../src')
+sys.path.append("../../src")
+
 
 class EnergyLayer:
     """_summary_
@@ -20,7 +21,9 @@ class EnergyLayer:
     """
 
     def __init__(self):
-        pass
+        self.devices = {}
+        self.component_list = []
 
-    # TODO: Methods that for each device during some timespan, given their
-    # current operation, calculate the average energy usage.
+    def add_device(self, device_id, device):
+        # Add a device to the energy layer.
+        self.devices[device_id] = device
