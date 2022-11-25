@@ -23,7 +23,7 @@ class HelloWorldDevice(ApplicationDevice):
                 "led_state": [False],
                 "token": [0],
                 "iteration": [0],
-            }
+            },
         )
 
         # Pin the Hello world process to the device core.

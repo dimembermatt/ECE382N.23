@@ -18,7 +18,7 @@ class ApplicationCore:
         core_info={
             "clock_speed_hz": 1,
         },
-        core_id=0
+        core_id=0,
     ):
         """_summary_
         An application core has at least the following:
@@ -32,7 +32,6 @@ class ApplicationCore:
         self.core_info = core_info
         self.core_id = core_id
         self.pinned_process = None
-
 
     def pin_process(self, process):
         """_summary_

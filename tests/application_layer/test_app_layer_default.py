@@ -25,7 +25,9 @@ def test_default_app():
     executed.
     """
     app_layer = ApplicationLayer()
-    app_device = ApplicationDevice(device_id=0, resources={"cores": [ApplicationCore(core_id=0)], "key": [0]})
+    app_device = ApplicationDevice(
+        device_id=0, resources={"cores": [ApplicationCore(core_id=0)], "key": [0]}
+    )
 
     app_process = ApplicationProcess(process_name="PROC1")
     app_task = ApplicationTask(
@@ -102,6 +104,7 @@ def test_default_app():
     assert app_device.get_resources()["key"][0] == 2
 
     print(event_timeline)
+
 
 if __name__ == "__main__":
     if sys.version_info[0] < 3:

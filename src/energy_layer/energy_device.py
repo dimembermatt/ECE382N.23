@@ -6,6 +6,7 @@
 @date       2022-10-21
 """
 
+
 class EnergyDevice:
     """_summary_
     Estimates and models the energy consumption of a given device. This

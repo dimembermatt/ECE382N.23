@@ -21,7 +21,9 @@ class ApplicationDevice:
     Devices may have schedulers that operate on their individual processes.
     """
 
-    def __init__(self, resources={"cores": []}, scheduler=ApplicationScheduler(), device_id=0):
+    def __init__(
+        self, resources={"cores": []}, scheduler=ApplicationScheduler(), device_id=0
+    ):
         """_summary_
         An application device has at least the following:
          - Hardware resources, including CPUs, ADCs, DACs, transceivers, etc

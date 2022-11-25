@@ -7,6 +7,7 @@
 @date       2022-10-21
 """
 
+
 class EnergySource:
     """_summary_
     Estimates and models a power supply or storage device.
