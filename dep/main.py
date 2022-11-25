@@ -8,7 +8,7 @@
 
 import sys
 
-from src.application_layer.application_layer import ApplicationLayer
+from src.application_model.application_model import ApplicationModel
 
 # from src.network_layer.network_layer import NetworkLayer
 # from src.energy_layer.energy_layer import EnergyLayer
