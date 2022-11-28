@@ -1,9 +1,9 @@
 """_summary_
-@file       energy_model_v0_0.py
+@file       energy_model_v0_1.py
 @author     Matthew Yu (matthewjkyu@gmail.com)
 @brief      Models device energy usage.
-@version    0.0.0
-@date       2022-11-26
+@version    0.0.1
+@date       2022-11-27
 """
 
 import copy
@@ -12,7 +12,7 @@ import sys
 from energy_model_interface import EnergyModelInterface
 
 
-class EnergyModel_V0_0(EnergyModelInterface):
+class EnergyModel_V0_1(EnergyModelInterface):
     """_summary_
     EnergyModel_V0_0 models a very abstract interpretation of the NoS energy
     usage. It has the following characteristics:
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     except ImportError:
         pass  # no need to fail because of missing dev dependency
 
-    model = EnergyModel_V0_0()
+    model = EnergyModel_V0_1()
 
     device_0 = {
         "device_name": "device_0",

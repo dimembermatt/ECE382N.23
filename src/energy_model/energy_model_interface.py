@@ -10,6 +10,7 @@ import sys
 
 import matplotlib.pyplot as plt
 from colorhash import ColorHash
+import numpy as np
 
 
 class EnergyModelInterface:
@@ -39,6 +40,9 @@ class EnergyModelInterface:
             ax.set_ylabel("Energy Usage (J)")
             ax.set_title(f"Device {device_id} Energy Consumption Over Time")
             self._devices[device_id]["ax"] = ax
+            timestamps = np.arange(len(self._energy_usage))
+            max_pwr = np.full(len(self._energy_usage),self._devices[device_id]["supply"]["supply_voltage"]*self._devices[device_id]["supply"]["max_supply_current"])
+            self._devices[device_id]["ax"].plot(max_pwr)
 
         # For each device, plot event hardware energy usage onto the timeline.
         for event in self._energy_usage:
