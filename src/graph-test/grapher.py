@@ -13,6 +13,9 @@ class Node:
         self.node_id = node_id
         self.connections = connected_nodes_list
 
+    def __str__(self) -> str:
+        return f'Node {self.node_id} connected to {self.connections}'
+
 class Grapher:
 
     def __init__(self, node_list) -> None:
@@ -40,15 +43,8 @@ class Grapher:
             node_connections = self.node_list[i].connections
             
             for connection in node_connections:
-                # if node_id > connection:
-                #     edge = (connection, node_id)
-                # else:
-                #     edge = (node_id, connection)
-                # if edge not in edges_list:
-                #     edges_list.append(edge)
-
                 connection_num = self.reverse_id_lookup[connection]
-                self.edge_list.append((connection_num, node_id_num))
+                self.edge_list.append((node_id_num, connection_num))
         self.graph.add_edges_from(self.edge_list)
 
         self.pos = nx.spring_layout(self.graph)
@@ -82,6 +78,12 @@ class Grapher:
     def set_node_color(self, node_id, color):
         node_id_num = self.reverse_id_lookup[node_id]
         self.node_colors[node_id_num] = color
+
+    def set_image_time(self, time):
+        if time >= 0:
+            plt.title("t = " + str(time))
+        else:
+            plt.title("Initial")
     
     def draw_network(self):
         nx.draw_networkx(self.graph, pos = self.pos, labels = self.labels, arrows = True,
