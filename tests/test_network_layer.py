@@ -11,8 +11,8 @@ if __name__ == "__main__":
 
     layer = NetworkLayer()
 
-    layer.add_device(0)
-    layer.add_device(1)
+    layer.add_device(0, (0, 0, 0), 0)
+    layer.add_device(1, (0, 1, 0), 0)
 
     device_list = layer.get_device_list()
     assert len(device_list) == 2

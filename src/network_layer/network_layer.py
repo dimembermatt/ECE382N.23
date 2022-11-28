@@ -19,11 +19,11 @@ class NetworkLayer:
         self.device_dict = dict()
         self.transmission_queue = []
 
-    def add_device(self, device_id):
+    def add_device(self, device_id, location=(0, 0, 0), transmission_range=0):
         if device_id in self.device_dict:
             raise Exception("Device " + str(device_id) + " already exists.")
 
-        self.device_dict[device_id] = NetworkDevice(device_id)
+        self.device_dict[device_id] = NetworkDevice(device_id, location, transmission_range)
 
     def get_device_list(self):
         device_list = list(self.device_dict.keys())
@@ -58,9 +58,11 @@ class NetworkDevice:
     and their physical properties (transmission power, geometry, etc).
     """
     
-    def __init__(self, device_id):
+    def __init__(self, device_id, device_location, transmission_range):
         self.transceiver = NetworkTransceiver(self, self.__receive_handler)
         self.device_id = device_id
+        self.device_location = device_location
+        self.transmission_range = transmission_range
 
     def __receive_handler(self, src_device, message):
         print(str(src_device) + " :: " + str(message))
@@ -89,12 +91,22 @@ class NetworkTransceiver:
         self.host_device = host_device
         self.transceiver_list = []
         self.receive_handler = receive_handler
+    
+    def __calculate_distance(self, other_device):
+        x1, y1, z1 = self.host_device.device_location
+        x2, y2, z2 = other_device.device_location
+
+        return ((x2 - x1) ** 2 + (y2 - y1) ** 2 + (z2 - z1) ** 2) ** 0.5
 
     def receive_handler(self, source_device, message):
         """
         This method handles the received message from another transceiver
         """
-        self.receive_handler(source_device, message)
+        distance = self.__calculate_distance(source_device)
+
+        # only receive if the message is within range
+        if distance <= self.host_device.transmission_range:
+            self.receive_handler(source_device, message)
 
     def send(self, dst_transceiver, message):
         """
