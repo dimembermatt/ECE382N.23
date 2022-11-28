@@ -7,7 +7,6 @@
 """
 
 import copy
-import pprint
 import sys
 
 from application_model_interface import ApplicationModelInterface
@@ -19,13 +18,6 @@ class ApplicationModel_V0_0(ApplicationModelInterface):
     has the following characteristics:
     - timing is event driven and the model evaluates devices and device tasks
       when an event starts or finishes.
-    - hardware is given a static idle and active energy consumption value, which
-      is used for determining eneryg usage over time.
-    - all devices can talk to other devices in the network and transmission of
-      data between devices is instantaneous and data is represented as a single
-      communication.
-    - a device has a static power source that provides a maximum fixed amount of
-      energy at any moment.
 
     NOTE: V0.1 (Application expansion 1) has the following characteristics:
     - device schedules are ordered by some fixed time resolution.
@@ -33,12 +25,12 @@ class ApplicationModel_V0_0(ApplicationModelInterface):
     - device cores have a core frequency that affect execution time.
     - the model evaluates devices at each time step.
 
-    NOTE: V0.2 (Energy expansion 1) has the following characteristics:
-    - multiple devices can share a single power source.
-    - energy consumption of CPU is based on the CPU utilization rate and
-      characteristics (frequency, supply voltage, current draw).
-    - the power source has voltage and current characteristics within some
-      distribution.
+
+    - all devices can talk to other devices in the network and transmission of
+      data between devices is instantaneous and data is represented as a single
+      communication.
+    - a device has a static power source that provides a maximum fixed amount of
+      energy at any moment.
 
     NOTE: V0.3 (Network expansion 1) has the following characteristics:
     - devices have a physical location in space.
@@ -54,12 +46,12 @@ class ApplicationModel_V0_0(ApplicationModelInterface):
         Adds a device to the application model. A device must have the following
         attributes:
         - device name (str)
+
         - a logical position consisting of a list of other devices that may or
           may not exist with which the device connects to (list(str))
-        - a set of cores and hardware peripherals, each with:
-            - a static idle and active energy consumption value (float, float)
-        - a logically ordered scheduling and partitioning scheme for each core
-          the device where each task:
+
+        - a logically ordered scheduling and partitioning scheme for a number of
+          cores on the device where each task:
             - specifies the input dependencies and output results.
 
         Args:
@@ -169,22 +161,6 @@ if __name__ == "__main__":
 
     device_0 = {
         "device_name": "device_0",
-        "cores": {
-            "core_0": {
-                "active_power": 100,  # Joules
-                "idle_power": 10,  # Joules
-            }
-        },
-        "peripherals": {
-            "comm_0": {
-                "active_power": 20,  # Joules
-                "idle_power": 10,  # Joules
-            },
-            "adc_0": {
-                "active_power": 10,  # Joules
-                "idle_power": 1,  # Joules
-            },
-        },
         "schedule": {
             "core_0": [
                 {
@@ -214,26 +190,6 @@ if __name__ == "__main__":
 
     device_1 = {
         "device_name": "device_1",
-        "cores": {
-            "core_0": {
-                "active_power": 100,
-                "idle_power": 10,
-            },
-            "core_1": {
-                "active_power": 150,
-                "idle_power": 20,
-            },
-        },
-        "peripherals": {
-            "comm_0": {
-                "active_power": 20,  # Joules
-                "idle_power": 10,  # Joules
-            },
-            "adc_0": {
-                "active_power": 10,  # Joules
-                "idle_power": 1,  # Joules
-            },
-        },
         "schedule": {
             "core_0": [
                 {
@@ -248,16 +204,22 @@ if __name__ == "__main__":
                 },
                 {
                     "task_name": "task_D",
+                    "dependencies": [],
+                    "outputs": {},
+                    "hw": [],
+                },
+                {
+                    "task_name": "task_E",
                     "dependencies": ["output_5"],
                     "outputs": {
-                        "output_6": ["device_1"],
+                        "output_7": ["device_1"],
                     },
                     "hw": [],
                 },
             ],
             "core_1": [
                 {
-                    "task_name": "task_E",
+                    "task_name": "task_F",
                     "dependencies": ["output_2"],
                     "outputs": {
                         "output_3": ["device_1"],
@@ -265,7 +227,7 @@ if __name__ == "__main__":
                     "hw": [],
                 },
                 {
-                    "task_name": "task_F",
+                    "task_name": "task_G",
                     "dependencies": ["output_3"],
                     "outputs": {
                         "output_4": ["device_1"],
@@ -273,7 +235,7 @@ if __name__ == "__main__":
                     "hw": [],
                 },
                 {
-                    "task_name": "task_G",
+                    "task_name": "task_H",
                     "dependencies": [],
                     "outputs": {
                         "output_5": ["device_1"],
@@ -289,5 +251,6 @@ if __name__ == "__main__":
     model.add_device(device_1["device_name"], device_1)
 
     event_timeline = model.generate_event_timeline()
+    print(event_timeline)
     model.print_event_timeline()
     model.visualize_event_timeline()

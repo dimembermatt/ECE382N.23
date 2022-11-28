@@ -3,13 +3,11 @@
 @author     Matthew Yu (matthewjkyu@gmail.com)
 @brief      Provides the abstraction interface for modeling device applications.
 @version    0.0.0
-@date       2022-11-23
+@date       2022-11-22
 """
 
-from datetime import date
 
 import matplotlib.pyplot as plt
-import numpy as np
 from colorhash import ColorHash
 
 
@@ -18,7 +16,7 @@ class ApplicationModelInterface:
         self._devices = {}
         self._event_timeline = []
         self._fig, self._ax = plt.subplots()
-        self._ax.set_xlabel("Time (cycles)")
+        self._ax.set_xlabel("Time (cycle)")
         self._ax.set_ylabel("CPU")
 
     def add_device(self, device_name, device) -> bool:
@@ -34,9 +32,8 @@ class ApplicationModelInterface:
         # Generate y components.
         cores = []
         for device_id, device in self._devices.items():
-            for core_id, core in device["cores"].items():
+            for core_id in device["schedule"].keys():
                 cores.append((f"{device_id}_{core_id}", device_id, core_id))
-
         self._ax.set_ylim(0, len(cores) * 10)
         self._ax.set_yticks([i * 10 + 5 for i in range(len(cores))])
         self._ax.set_yticklabels([label for label, _, _ in cores])
@@ -68,7 +65,6 @@ class ApplicationModelInterface:
         return self._event_timeline
 
     def get_event_timeline_step(self, step) -> (bool, dict):
-        # Return event timeline step
         if step < 0 or step >= len(self._event_timeline):
             return (False, {})
         else:
