@@ -183,11 +183,11 @@ def test_default_app():
     event_timeline = app_model.generate_event_timeline()
     energy_usage = energy_model.generate_energy_usage(event_timeline)
 
-    # app_model.save_outputs()
-    # app_model.visualize_event_timeline()
+    app_model.save_outputs()
+    app_model.visualize_event_timeline()
 
-    # energy_model.save_outputs()
-    # energy_model.visualize_energy_usage()
+    energy_model.save_outputs()
+    energy_model.visualize_energy_usage()
 
     network_graph = network_model.generate_network_graph(event_timeline)
 
