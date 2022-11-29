@@ -14,11 +14,12 @@ from colorhash import ColorHash
 
 
 class EnergyModelInterface:
-    def __init__(self) -> None:
+    def __init__(self, model_name) -> None:
         self._devices = {}
         self._energy_supplies = {}
         self._energy_usage = []
         self._fig, self._ax = None, None
+        self._model_name = model_name
 
     def add_device(self, device_name, device) -> bool:
         if device_name in self._devices:
@@ -50,6 +51,8 @@ class EnergyModelInterface:
             ax.set_title(f"Device {device_id} Energy Consumption Over Time")
             self._devices[device_id]["ax"] = ax
             self._axs = ax
+
+        plt.get_current_fig_manager().set_window_title(self._model_name)
 
         # For each device, plot event hardware energy usage onto the timeline.
         for event in self._energy_usage:

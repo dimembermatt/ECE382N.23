@@ -19,9 +19,10 @@ class ApplicationModelInterface:
         self._devices = {}
         self._event_timeline = []
         self._fig, self._ax = plt.subplots()
-        self._fig.suptitle(model_name)
+        self._fig.suptitle("Event Timeline")
         self._ax.set_xlabel("Time (cycle)")
         self._ax.set_ylabel("CPU")
+        plt.get_current_fig_manager().set_window_title(model_name)
 
     def add_device(self, device_name, device) -> bool:
         if device_name in self._devices:

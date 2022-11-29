@@ -31,7 +31,7 @@ class EnergyModel_V0_0(EnergyModelInterface):
     """
 
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__("V0_0 Energy Model")
 
     def add_device(self, device_name, device) -> bool:
         """_summary_

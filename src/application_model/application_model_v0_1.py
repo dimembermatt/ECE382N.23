@@ -23,7 +23,7 @@ class ApplicationModel_V0_1(ApplicationModelInterface):
     """
 
     def __init__(self) -> None:
-        super().__init__("V0_1 Model")
+        super().__init__("V0_1 Application Model")
 
     def add_device(self, device_name, device) -> bool:
         """_summary_
