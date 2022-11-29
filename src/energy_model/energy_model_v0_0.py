@@ -17,9 +17,9 @@ class EnergyModel_V0_0(EnergyModelInterface):
     EnergyModel_V0_0 models a very abstract interpretation of the NoS energy
     usage. It has the following characteristics:
     - devices have a static energy source that provides a maximum fixed amount of
-    energy at any moment.
+      energy at any moment.
     - hardware for each device is given a static idle and active energy
-    consumption value, which is used for determining energy usage over time.
+      consumption value, which is used for determining energy usage over time.
     - timing is determined by the ApplicationModel event timeline.
 
     NOTE: V0.1 (Energy expansion 1) has the following characteristics:
@@ -49,8 +49,6 @@ class EnergyModel_V0_0(EnergyModelInterface):
             bool: _description_
         """
 
-        # TODO: verify that device has the above attributes.
-
         return super().add_device(device_name, device)
 
     def add_energy_supply(self, supply_name, supply) -> bool:
@@ -71,21 +69,22 @@ class EnergyModel_V0_0(EnergyModelInterface):
         return super().add_energy_supply(supply_name, supply)
 
     def generate_energy_usage(self, event_timeline):
-        # Plot event energy usage on the timelines.
+        # Plot event energy usage on the timeline.
         for device_id in self._devices.keys():
             self._devices[device_id]["events"] = []
             if self._devices[device_id]["supply_id"] in self._energy_supplies:
-                self._devices[device_id]["supply"] = self._energy_supplies[self._devices[device_id]["supply_id"]]
+                self._devices[device_id]["supply"] = self._energy_supplies[
+                    self._devices[device_id]["supply_id"]
+                ]
                 del self._devices[device_id]["supply_id"]
 
         for event in event_timeline:
-            energy_event = {
-                "timestamp": int(event["timestamp"]),
-                "devices": {}
-            }
+            energy_event = {"timestamp": int(event["timestamp"]), "devices": {}}
             for device_id, device in event["devices"].items():
                 device_info = self._devices[device_id]
-                idle_consumers = [core for core in device_info["cores"]] + [peripheral for peripheral in device_info["peripherals"]]
+                idle_consumers = [core for core in device_info["cores"]] + [
+                    peripheral for peripheral in device_info["peripherals"]
+                ]
                 active_consumers = []
 
                 for core_id in device["cores"].keys():
@@ -104,18 +103,26 @@ class EnergyModel_V0_0(EnergyModelInterface):
                     if "core" in consumer:
                         energy_usage = device_info["cores"][consumer]["active_energy"]
                     else:
-                        energy_usage = device_info["peripherals"][consumer]["active_energy"]
+                        energy_usage = device_info["peripherals"][consumer][
+                            "active_energy"
+                        ]
 
-                    energy_event["devices"][device_id].append([consumer, "active", energy_usage])
+                    energy_event["devices"][device_id].append(
+                        [consumer, "active", energy_usage]
+                    )
 
                 # Calculate energy per consumer
                 for consumer in idle_consumers:
                     if "core" in consumer:
                         energy_usage = device_info["cores"][consumer]["idle_energy"]
                     else:
-                        energy_usage = device_info["peripherals"][consumer]["idle_energy"]
+                        energy_usage = device_info["peripherals"][consumer][
+                            "idle_energy"
+                        ]
 
-                    energy_event["devices"][device_id].append([consumer, "idle", energy_usage])
+                    energy_event["devices"][device_id].append(
+                        [consumer, "idle", energy_usage]
+                    )
 
             self._energy_usage.append(energy_event)
 
@@ -152,7 +159,7 @@ if __name__ == "__main__":
                 "idle_energy": 1,  # Joules
             },
         },
-        "supply_id": "supply_0"
+        "supply_id": "supply_0",
     }
 
     device_1 = {
@@ -173,7 +180,7 @@ if __name__ == "__main__":
                 "idle_energy": 1,  # Joules
             },
         },
-        "supply_id": "supply_1"
+        "supply_id": "supply_1",
     }
 
     model.add_device(device_0["device_name"], device_0)
@@ -199,17 +206,17 @@ if __name__ == "__main__":
             "timestamp": 0,
             "devices": {
                 "device_0": {"cores": {"core_0": "task_A"}, "hw": ["adc_0"]},
-                "device_1": {"cores": {}, "hw": []},
+                "device_1": {"cores": {"core_0": "task_AA"}, "hw": []},
             },
-            "cache": [{"output_0": ["device_0"]}],
+            "cache": [{"output_0": ["device_0"]}, {}],
         },
         {
             "timestamp": 1,
             "devices": {
                 "device_0": {"cores": {"core_0": "task_B"}, "hw": ["comm_0"]},
-                "device_1": {"cores": {}, "hw": []},
+                "device_1": {"cores": {"core_0": "task_AA"}, "hw": []},
             },
-            "cache": [{"output_1": ["device_1"]}],
+            "cache": [{"output_1": ["device_1"]}, {}],
         },
         {
             "timestamp": 2,
@@ -254,7 +261,8 @@ if __name__ == "__main__":
             },
             "cache": [{"output_7": ["device_1"]}],
         },
-    ]
+    ]  # [{'timestamp': 0, 'devices': {'device_0': {'cores': {'core_0': 'task_A'}, 'hw': ['adc_0']}, 'device_1': {'cores': {'core_0': 'task_AA'}, 'hw': []}}, 'cache': [{'output_0': ['device_0']}]}, {'timestamp': 1.0, 'devices': {'device_1': {'cores': {'core_0': 'task_AA'}, 'hw': []}, 'device_0': {'cores': {'core_0': 'task_B'}, 'hw': ['comm_0']}}, 'cache': [{}, {'output_1': ['device_1']}]}, {'timestamp': 2.0, 'devices': {'device_0': {'cores': {}, 'hw': []}, 'device_1': {'cores': {'core_0': 'task_C'}, 'hw': ['comm_0']}}, 'cache': [{'output_2': ['device_1']}]}, {'timestamp': 3.0, 'devices': {'device_0': {'cores': {}, 'hw': []}, 'device_1': {'cores': {'core_0': 'task_D', 'core_1': 'task_F'}, 'hw': []}}, 'cache': [{}, {'output_3': ['device_1']}]}, {'timestamp': 4.0, 'devices': {'device_0': {'cores': {}, 'hw': []}, 'device_1': {'cores': {'core_1': 'task_G'}, 'hw': []}}, 'cache': [{'output_4': ['device_1']}]}, {'timestamp': 5.0, 'devices': {'device_0': {'cores': {}, 'hw': []}, 'device_1': {'cores': {'core_1': 'task_H'}, 'hw': []}}, 'cache': [{'output_5': ['device_1']}]}, {'timestamp': 6.0, 'devices': {'device_0': {'cores': {}, 'hw': []}, 'device_1': {'cores': {'core_0': 'task_E'}, 'hw': []}}, 'cache': [{'output_7': ['device_1']}]}]
+
     energy_usage = model.generate_energy_usage(event_timeline)
     model.print_energy_usage()
     model.visualize_energy_usage()

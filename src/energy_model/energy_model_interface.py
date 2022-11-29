@@ -48,12 +48,25 @@ class EnergyModelInterface:
                 y = 0
                 for consumer, status, energy_usage in device:
                     c = ColorHash(consumer).rgb
-                    device_info["ax"].bar([timestamp], [energy_usage], bottom=y, width=1, label=f"{consumer}", color=(c[0] / 255, c[1] / 255, c[2] / 255))
-                    device_info["ax"].text(x=timestamp, y=y + energy_usage, s=f"{consumer}", ha="center", va="top", color="black")
+                    device_info["ax"].bar(
+                        [timestamp],
+                        [energy_usage],
+                        bottom=y,
+                        width=1,
+                        label=f"{consumer}",
+                        color=(c[0] / 255, c[1] / 255, c[2] / 255),
+                    )
+                    device_info["ax"].text(
+                        x=timestamp,
+                        y=y + energy_usage,
+                        s=f"{consumer}",
+                        ha="center",
+                        va="top",
+                        color="black",
+                    )
                     y += energy_usage
 
         return self._energy_usage
-
 
     def get_energy_usage_step(self, step) -> (bool, dict):
         if step < 0 or step >= len(self._energy_usage):

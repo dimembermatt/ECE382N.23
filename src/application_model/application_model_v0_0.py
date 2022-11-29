@@ -170,15 +170,13 @@ if __name__ == "__main__":
                 {
                     "task_name": "task_AA",
                     "dependencies": [],
-                    "outputs": {
-                    },
+                    "outputs": {},
                     "hw": [],
                 },
                 {
                     "task_name": "task_AA",
                     "dependencies": [],
-                    "outputs": {
-                    },
+                    "outputs": {},
                     "hw": [],
                 },
                 {

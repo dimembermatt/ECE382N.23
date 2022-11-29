@@ -143,9 +143,8 @@ class ApplicationModel_V0_0(ApplicationModelInterface):
                     }
                     tasks.append(task)
 
-            # print(timeline_entry)
-
             if len(tasks) > 0:
+
                 def get_duration(elem):
                     return elem["duration"]
 
@@ -192,9 +191,15 @@ class ApplicationModel_V0_0(ApplicationModelInterface):
                         running_devices[device_id]["cores"][core_id] = copy.deepcopy(
                             core
                         )
+                        running_devices[device_id]["hw"] = copy.deepcopy(
+                            timeline_entry["devices"][device_id]["hw"]
+                        )
                     else:
                         running_devices[device_id] = {
-                            "cores": {core_id: copy.deepcopy(core)}
+                            "cores": {core_id: copy.deepcopy(core)},
+                            "hw": copy.deepcopy(
+                                timeline_entry["devices"][device_id]["hw"]
+                            ),
                         }
 
                 # Reformat each core entry to just contain the task name.
@@ -271,8 +276,7 @@ if __name__ == "__main__":
                     "task_name": "task_AA",
                     "duration": 2,
                     "dependencies": [],
-                    "outputs": {
-                    },
+                    "outputs": {},
                     "hw": [],
                 },
                 {
