@@ -12,7 +12,7 @@ import sys
 from application_model_interface import ApplicationModelInterface
 
 
-class ApplicationModel_V0_0(ApplicationModelInterface):
+class ApplicationModel_V0_1(ApplicationModelInterface):
     """_summary_
     ApplicationModel_V0_1 (Application expansion 1) models a very abstract
     interpretation of the NoS. It has the following characteristics:
@@ -76,7 +76,12 @@ class ApplicationModel_V0_0(ApplicationModelInterface):
         running_devices = {}
         timestamp = 0
         while True:
-            timeline_entry = {"timestamp": timestamp, "devices": {}, "cache": []}
+            timeline_entry = {
+                "timestamp": timestamp,
+                "duration": 0,
+                "devices": {},
+                "cache": []
+            }
 
             # Devices with active tasks keep running in the next iteration.
             if len(running_devices.keys()) != 0:
@@ -150,6 +155,7 @@ class ApplicationModel_V0_0(ApplicationModelInterface):
 
                 tasks.sort(key=get_duration)
                 duration = tasks[0]["duration"]
+                timeline_entry["duration"] = duration
 
                 # "Execute" the first N tasks with the shortest duration.
                 done_tasks = []
@@ -174,7 +180,10 @@ class ApplicationModel_V0_0(ApplicationModelInterface):
                     # Update individual device cache.
                     for output_id, output_targets in outputs.items():
                         for output_target in output_targets:
-                            devices[output_target]["cache"].append(output_id)
+                            if "cache" not in devices[output_target]:
+                                devices[output_target]["cache"] = [output_id]
+                            else:
+                                devices[output_target]["cache"].append(output_id)
 
                 # Advance time by the duration of the shortest tasks.
                 timestamp += duration
@@ -226,7 +235,7 @@ if __name__ == "__main__":
     except ImportError:
         pass  # no need to fail because of missing dev dependency
 
-    model = ApplicationModel_V0_0()
+    model = ApplicationModel_V0_1()
 
     device_0 = {
         "device_name": "device_0",

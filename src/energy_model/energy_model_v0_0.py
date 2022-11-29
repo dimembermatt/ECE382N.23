@@ -3,7 +3,7 @@
 @author     Matthew Yu (matthewjkyu@gmail.com)
 @brief      Models device energy usage.
 @version    0.0.0
-@date       2022-11-26
+@date       2022-11-28
 """
 
 import copy
@@ -79,7 +79,11 @@ class EnergyModel_V0_0(EnergyModelInterface):
                 del self._devices[device_id]["supply_id"]
 
         for event in event_timeline:
-            energy_event = {"timestamp": int(event["timestamp"]), "devices": {}}
+            energy_event = {
+                "timestamp": event["timestamp"],
+                "duration": event["duration"],
+                "devices": {}
+            }
             for device_id, device in event["devices"].items():
                 device_info = self._devices[device_id]
                 idle_consumers = [core for core in device_info["cores"]] + [
@@ -261,8 +265,9 @@ if __name__ == "__main__":
             },
             "cache": [{"output_7": ["device_1"]}],
         },
-    ]  # [{'timestamp': 0, 'devices': {'device_0': {'cores': {'core_0': 'task_A'}, 'hw': ['adc_0']}, 'device_1': {'cores': {'core_0': 'task_AA'}, 'hw': []}}, 'cache': [{'output_0': ['device_0']}]}, {'timestamp': 1.0, 'devices': {'device_1': {'cores': {'core_0': 'task_AA'}, 'hw': []}, 'device_0': {'cores': {'core_0': 'task_B'}, 'hw': ['comm_0']}}, 'cache': [{}, {'output_1': ['device_1']}]}, {'timestamp': 2.0, 'devices': {'device_0': {'cores': {}, 'hw': []}, 'device_1': {'cores': {'core_0': 'task_C'}, 'hw': ['comm_0']}}, 'cache': [{'output_2': ['device_1']}]}, {'timestamp': 3.0, 'devices': {'device_0': {'cores': {}, 'hw': []}, 'device_1': {'cores': {'core_0': 'task_D', 'core_1': 'task_F'}, 'hw': []}}, 'cache': [{}, {'output_3': ['device_1']}]}, {'timestamp': 4.0, 'devices': {'device_0': {'cores': {}, 'hw': []}, 'device_1': {'cores': {'core_1': 'task_G'}, 'hw': []}}, 'cache': [{'output_4': ['device_1']}]}, {'timestamp': 5.0, 'devices': {'device_0': {'cores': {}, 'hw': []}, 'device_1': {'cores': {'core_1': 'task_H'}, 'hw': []}}, 'cache': [{'output_5': ['device_1']}]}, {'timestamp': 6.0, 'devices': {'device_0': {'cores': {}, 'hw': []}, 'device_1': {'cores': {'core_0': 'task_E'}, 'hw': []}}, 'cache': [{'output_7': ['device_1']}]}]
+    ]
 
     energy_usage = model.generate_energy_usage(event_timeline)
+    print(energy_usage)
     model.print_energy_usage()
     model.visualize_energy_usage()

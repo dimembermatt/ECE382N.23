@@ -3,9 +3,12 @@
 @author     Matthew Yu (matthewjkyu@gmail.com)
 @brief      Provides the abstraction interface for modeling device applications.
 @version    0.0.0
-@date       2022-11-22
+@date       2022-11-28
 """
 
+
+import json
+import sys
 
 import matplotlib.pyplot as plt
 from colorhash import ColorHash
@@ -44,7 +47,8 @@ class ApplicationModelInterface:
 
         # Plot events onto the timeline.
         for event in self._event_timeline:
-            timestamp = int(event["timestamp"])
+            timestamp = event["timestamp"]
+            duration = event["duration"]
             for device_id, device in self._devices.items():
                 for core_id in device["cores"].keys():
                     if device_id in event["devices"] and core_id in event["devices"][device_id]["cores"]:
@@ -55,12 +59,12 @@ class ApplicationModelInterface:
                                 idx = idx_
                         c = ColorHash(task_name).rgb
                         self._ax.broken_barh(
-                            [(timestamp, 1)],
+                            [(timestamp, duration)],
                             (idx * 10 + 2, 6),
                             color=(c[0] / 255, c[1] / 255, c[2] / 255),
                         )
                         self._ax.text(
-                            x=timestamp + 0.5,
+                            x=timestamp + (duration/2),
                             y=idx * 10 + 9,
                             s=task_name,
                             ha="center",
@@ -95,3 +99,25 @@ class ApplicationModelInterface:
     def visualize_event_timeline(self) -> None:
         plt.tight_layout()
         plt.show()
+
+    def save_outputs(self):
+        plt.tight_layout()
+        plt.savefig("output_event_timeline.jpg")
+        with open("output_event_timeline.json", "w") as fp:
+            json.dump(self._event_timeline, fp)
+
+def get_application_model(name, cwd):
+    try:
+        sys.path.append(cwd + "src/application_model/")
+        from application_model_v0_0 import ApplicationModel_V0_0
+        from application_model_v0_1 import ApplicationModel_V0_1
+    except ImportError:
+        raise Exception("Unable to load models.")
+
+    match name:
+        case "ApplicationModel_V0_0":
+            return ApplicationModel_V0_0()
+        case "ApplicationModel_V0_1":
+            return ApplicationModel_V0_1()
+        case _:
+            raise Exception("No application model specified.")

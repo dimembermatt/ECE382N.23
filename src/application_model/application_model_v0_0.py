@@ -3,7 +3,7 @@
 @author     Matthew Yu (matthewjkyu@gmail.com)
 @brief      Models device applications.
 @version    0.0.0
-@date       2022-11-23
+@date       2022-11-28
 """
 
 import copy
@@ -67,7 +67,12 @@ class ApplicationModel_V0_0(ApplicationModelInterface):
         timestamp = 0
         while True:
             timeline_complete = True
-            timeline_entry = {"timestamp": timestamp, "devices": {}, "cache": []}
+            timeline_entry = {
+                "timestamp": timestamp,
+                "duration": 1,
+                "devices": {},
+                "cache": []
+            }
 
             # Go through each device's schedule, look at the first task
             # If the first task has no remaining dependencies, pop from schedule
@@ -112,7 +117,10 @@ class ApplicationModel_V0_0(ApplicationModelInterface):
             for output_dict in timeline_entry["cache"]:
                 for output_id, output_targets in output_dict.items():
                     for output_target in output_targets:
-                        devices[output_target]["cache"].append(output_id)
+                        if "cache" not in devices[output_target]:
+                            devices[output_target]["cache"] = [output_id]
+                        else:
+                            devices[output_target]["cache"].append(output_id)
 
             self._event_timeline.append(timeline_entry)
             timestamp += 1
@@ -245,4 +253,5 @@ if __name__ == "__main__":
     event_timeline = model.generate_event_timeline()
     print(event_timeline)
     model.print_event_timeline()
+    model.save_outputs()
     model.visualize_event_timeline()
