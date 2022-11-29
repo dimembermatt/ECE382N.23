@@ -37,6 +37,7 @@ class ApplicationModelInterface:
             for core_id in device["schedule"].keys():
                 device["core_utilization"][core_id] = [0, 0]
                 cores.append((f"{device_id}_{core_id}", device_id, core_id))
+        cores.reverse()
         self._ax.set_ylim(0, len(cores) * 10)
         self._ax.set_yticks([i * 10 + 5 for i in range(len(cores))])
         self._ax.set_yticklabels([label for label, _, _ in cores])
@@ -45,7 +46,7 @@ class ApplicationModelInterface:
         for event in self._event_timeline:
             timestamp = int(event["timestamp"])
             for device_id, device in self._devices.items():
-                for core_id in device["cores"].values():
+                for core_id in device["cores"].keys():
                     if device_id in event["devices"] and core_id in event["devices"][device_id]["cores"]:
                         task_name = event["devices"][device_id]["cores"][core_id]
                         idx = 0
