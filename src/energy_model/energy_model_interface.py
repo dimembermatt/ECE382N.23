@@ -41,8 +41,8 @@ class EnergyModelInterface:
         if len(self._devices.keys()) > 1:
             for ax, device_id in zip(self._axs, self._devices.keys()):
                 ax.set_xlabel("Time (cycles)")
-                ax.set_ylabel("Energy Usage (J)")
-                ax.set_title(f"Device {device_id} Energy Consumption Over Time")
+                ax.set_ylabel("Power Consumption (W)")
+                ax.set_title(f"Device {device_id} Power Consumption Over Time")
                 self._devices[device_id]["ax"] = ax
                 # Print power limit line
                 timestamps = []
@@ -58,8 +58,8 @@ class EnergyModelInterface:
             ax = self._axs
             device_id = list(self._devices.keys())[0]
             ax.set_xlabel("Time (cycles)")
-            ax.set_ylabel("Energy Usage (J)")
-            ax.set_title(f"Device {device_id} Energy Consumption Over Time")
+            ax.set_ylabel("Power Consumption (W)")
+            ax.set_title(f"Device {device_id} Power Consumption Over Time")
             self._devices[device_id]["ax"] = ax
             self._axs = ax
             # Print power limit line
