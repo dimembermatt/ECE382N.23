@@ -136,6 +136,7 @@ if __name__ == "__main__":
 
     device_0 = {
         "device_name": "device_0",
+        "cores": {"core_0" : {}},
         "schedule": {
             "core_0": [
                 {
@@ -165,6 +166,10 @@ if __name__ == "__main__":
 
     device_1 = {
         "device_name": "device_1",
+        "cores": {
+            "core_0" : {},
+            "core_1": {}
+        },
         "schedule": {
             "core_0": [
                 {

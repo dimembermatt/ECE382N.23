@@ -33,7 +33,9 @@ class ApplicationModelInterface:
         # Generate y components.
         cores = []
         for device_id, device in self._devices.items():
+            device["core_utilization"] = {}
             for core_id in device["schedule"].keys():
+                device["core_utilization"][core_id] = [0, 0]
                 cores.append((f"{device_id}_{core_id}", device_id, core_id))
         self._ax.set_ylim(0, len(cores) * 10)
         self._ax.set_yticks([i * 10 + 5 for i in range(len(cores))])
@@ -42,26 +44,30 @@ class ApplicationModelInterface:
         # Plot events onto the timeline.
         for event in self._event_timeline:
             timestamp = int(event["timestamp"])
-            for device_id, device in event["devices"].items():
-                for core_id, core in device["cores"].items():
-                    idx = 0
-                    for idx_, core_ in enumerate(cores):
-                        if device_id == core_[1] and core_id == core_[2]:
-                            idx = idx_
-                    c = ColorHash(core).rgb
-                    self._ax.broken_barh(
-                        [(timestamp, 1)],
-                        (idx * 10 + 2, 6),
-                        color=(c[0] / 255, c[1] / 255, c[2] / 255),
-                    )
-                    self._ax.text(
-                        x=timestamp + 0.5,
-                        y=idx * 10 + 9,
-                        s=core,
-                        ha="center",
-                        va="center",
-                        color="black",
-                    )
+            for device_id, device in self._devices.items():
+                for core_id in device["cores"].values():
+                    if device_id in event["devices"] and core_id in event["devices"][device_id]["cores"]:
+                        task_name = event["devices"][device_id]["cores"][core_id]
+                        idx = 0
+                        for idx_, core_ in enumerate(cores):
+                            if device_id == core_[1] and core_id == core_[2]:
+                                idx = idx_
+                        c = ColorHash(task_name).rgb
+                        self._ax.broken_barh(
+                            [(timestamp, 1)],
+                            (idx * 10 + 2, 6),
+                            color=(c[0] / 255, c[1] / 255, c[2] / 255),
+                        )
+                        self._ax.text(
+                            x=timestamp + 0.5,
+                            y=idx * 10 + 9,
+                            s=task_name,
+                            ha="center",
+                            va="center",
+                            color="black",
+                        )
+                        self._devices[device_id]["core_utilization"][core_id][0] += 1
+                    self._devices[device_id]["core_utilization"][core_id][1] += 1
 
         return self._event_timeline
 
@@ -79,6 +85,11 @@ class ApplicationModelInterface:
             for device in event["devices"].items():
                 print(f"\t{device}")
             print()
+
+        print(f"CPU_UTILIZATION:")
+        for device_id, device in self._devices.items():
+            for core_id, core_utilization in device["core_utilization"].items():
+                print(f"{device_id}_{core_id}: {core_utilization[0] / core_utilization[1]}")
 
     def visualize_event_timeline(self) -> None:
         plt.tight_layout()
