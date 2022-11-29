@@ -12,10 +12,11 @@ from colorhash import ColorHash
 
 
 class ApplicationModelInterface:
-    def __init__(self) -> None:
+    def __init__(self, model_name) -> None:
         self._devices = {}
         self._event_timeline = []
         self._fig, self._ax = plt.subplots()
+        self._fig.suptitle(model_name)
         self._ax.set_xlabel("Time (cycle)")
         self._ax.set_ylabel("CPU")
 
