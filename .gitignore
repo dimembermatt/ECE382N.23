@@ -130,3 +130,6 @@ dmypy.json
 
 # Drawio backups
 *.bkp
+
+# Image Cache for Network Graph Visualization
+image_cache/
