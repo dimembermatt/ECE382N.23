@@ -75,7 +75,69 @@ if __name__ == "__main__":
     model.add_device(device_0["device_name"], device_0)
     model.add_device(device_1["device_name"], device_1)
 
-    network_graph = model.generate_network_graph()
+    event_timeline = [
+        {
+            "timestamp": 0,
+            "devices": {
+                "device_0": {"cores": {"core_0": "task_A"}, "hw": ["adc_0"]},
+                "device_1": {"cores": {"core_0": "task_AA"}, "hw": []},
+            },
+            "cache": [{"output_0": ["device_0"]}, {}],
+        },
+        {
+            "timestamp": 1,
+            "devices": {
+                "device_0": {"cores": {"core_0": "task_B"}, "hw": ["comm_0"]},
+                "device_1": {"cores": {"core_0": "task_AA"}, "hw": []},
+            },
+            "cache": [{"output_1": ["device_1"]}, {}],
+        },
+        {
+            "timestamp": 2,
+            "devices": {
+                "device_0": {"cores": {}, "hw": []},
+                "device_1": {"cores": {"core_0": "task_C"}, "hw": ["comm_0"]},
+            },
+            "cache": [{"output_2": ["device_1"]}],
+        },
+        {
+            "timestamp": 3,
+            "devices": {
+                "device_0": {"cores": {}, "hw": []},
+                "device_1": {
+                    "cores": {"core_0": "task_D", "core_1": "task_F"},
+                    "hw": [],
+                },
+            },
+            "cache": [{}, {"output_3": ["device_1"]}],
+        },
+        {
+            "timestamp": 4,
+            "devices": {
+                "device_0": {"cores": {}, "hw": []},
+                "device_1": {"cores": {"core_1": "task_G"}, "hw": []},
+            },
+            "cache": [{"output_4": ["device_1"]}],
+        },
+        {
+            "timestamp": 5,
+            "devices": {
+                "device_0": {"cores": {}, "hw": []},
+                "device_1": {"cores": {"core_1": "task_H"}, "hw": []},
+            },
+            "cache": [{"output_5": ["device_1"]}],
+        },
+        {
+            "timestamp": 6,
+            "devices": {
+                "device_0": {"cores": {}, "hw": []},
+                "device_1": {"cores": {"core_0": "task_E"}, "hw": []},
+            },
+            "cache": [{"output_7": ["device_1"]}],
+        },
+    ]
+
+    network_graph = model.generate_network_graph(event_timeline)
     print(network_graph)
     model.print_network_graph()
     model.visualize_network_graph()
