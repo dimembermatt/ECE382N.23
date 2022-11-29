@@ -1,5 +1,5 @@
 """_summary_
-@file       test_simulation_temp_sensor.py
+@file       test_simulation_model_temp_sensor.py
 @author     Matthew Yu (matthewjkyu@gmail.com)
 @brief      Entry point for modeling. The device under test
             is a TM4C masquerading as a temperature sensor.

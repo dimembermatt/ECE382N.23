@@ -107,6 +107,8 @@ class ApplicationModel_V0_1(ApplicationModelInterface):
                         deps_fulfilled = True
                         if len(task["dependencies"]) > 0:
                             for dependency in task["dependencies"]:
+                                if "cache" not in device:
+                                    device["cache"] = []
                                 if dependency not in device["cache"]:
                                     deps_fulfilled = False
 

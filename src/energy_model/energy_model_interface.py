@@ -76,7 +76,6 @@ class EnergyModelInterface:
 
         # For each device, plot event hardware energy usage onto the timeline.
         for event in self._energy_usage:
-            print(event)
             timestamp = event["timestamp"]
             duration = event["duration"]
             for device_id, device in event["devices"].items():
