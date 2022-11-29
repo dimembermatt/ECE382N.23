@@ -10,6 +10,7 @@ import copy
 import sys
 
 from network_model_interface import NetworkModelInterface
+from adapter import Adapter
 
 
 class NetworkModel_V0_0(NetworkModelInterface):
@@ -47,11 +48,10 @@ class NetworkModel_V0_0(NetworkModelInterface):
 
     def generate_network_graph(self, event_timeline) -> dict:
         # Plot event network communication on the graph.
-
-        # for each event in the timeline
-        for event in event_timeline:
-            # get the actors in the event
-            pass
+        
+        print(self._devices)
+        adapter = Adapter(self._devices)
+        adapter.create_gif(event_timeline, 'network-graph.gif')
 
         return super().generate_network_graph()
 
