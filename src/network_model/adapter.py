@@ -192,8 +192,9 @@ class Adapter:
         self.connected_devices = {}
         self.node_list = []
 
-        for device in self.device_list:
-            device_name = device['device_name']
+        print(device_list)
+        for device_name in self.device_list:
+            device = self.device_list[device_name]
             connected_device_list = []
 
             for core in device['schedule']:

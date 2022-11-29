@@ -133,3 +133,6 @@ dmypy.json
 
 *.json
 *.jpg
+=======
+# Image Cache for Network Graph Visualization
+image_cache/

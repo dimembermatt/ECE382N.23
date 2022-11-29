@@ -49,7 +49,6 @@ class NetworkModel_V0_0(NetworkModelInterface):
     def generate_network_graph(self, event_timeline) -> dict:
         # Plot event network communication on the graph.
         
-        print(self._devices)
         adapter = Adapter(self._devices)
         adapter.create_gif(event_timeline, 'network-graph.gif')
 
@@ -68,9 +67,114 @@ if __name__ == "__main__":
 
     model = NetworkModel_V0_0()
 
-    device_0 = {"device_name": "device_0", "neighbors": ["device_1"]}
+    # device_0 = {"device_name": "device_0", "neighbors": ["device_1"]}
 
-    device_1 = {"device_name": "device_1", "neighbors": ["device_0"]}
+    # device_1 = {"device_name": "device_1", "neighbors": ["device_0"]}
+
+    device_0 = {
+        "device_name": "device_0",
+        "cores": {"core_0" : {}},
+        "schedule": {
+            "core_0": [
+                {
+                    "task_name": "task_A",
+                    "dependencies": [],
+                    "outputs": {
+                        "output_0": ["device_0"],
+                    },
+                    "hw": [
+                        "adc_0",
+                    ],
+                },
+                {
+                    "task_name": "task_B",
+                    "dependencies": ["output_0"],
+                    "outputs": {
+                        "output_1": ["device_1"],
+                    },
+                    "hw": [
+                        "comm_0",
+                    ],
+                },
+            ]
+        },
+        "cache": [],
+    }
+
+    device_1 = {
+        "device_name": "device_1",
+        "cores": {
+            "core_0" : {},
+            "core_1": {}
+        },
+        "schedule": {
+            "core_0": [
+                {
+                    "task_name": "task_AA",
+                    "dependencies": [],
+                    "outputs": {},
+                    "hw": [],
+                },
+                {
+                    "task_name": "task_AA",
+                    "dependencies": [],
+                    "outputs": {},
+                    "hw": [],
+                },
+                {
+                    "task_name": "task_C",
+                    "dependencies": ["output_1"],
+                    "outputs": {
+                        "output_2": ["device_1"],
+                    },
+                    "hw": [
+                        "comm_0",
+                    ],
+                },
+                {
+                    "task_name": "task_D",
+                    "dependencies": [],
+                    "outputs": {},
+                    "hw": [],
+                },
+                {
+                    "task_name": "task_E",
+                    "dependencies": ["output_5"],
+                    "outputs": {
+                        "output_7": ["device_1"],
+                    },
+                    "hw": [],
+                },
+            ],
+            "core_1": [
+                {
+                    "task_name": "task_F",
+                    "dependencies": ["output_2"],
+                    "outputs": {
+                        "output_3": ["device_1"],
+                    },
+                    "hw": [],
+                },
+                {
+                    "task_name": "task_G",
+                    "dependencies": ["output_3"],
+                    "outputs": {
+                        "output_4": ["device_1"],
+                    },
+                    "hw": [],
+                },
+                {
+                    "task_name": "task_H",
+                    "dependencies": [],
+                    "outputs": {
+                        "output_5": ["device_1"],
+                    },
+                    "hw": [],
+                },
+            ],
+        },
+        "cache": [],
+    }
 
     model.add_device(device_0["device_name"], device_0)
     model.add_device(device_1["device_name"], device_1)
@@ -140,4 +244,4 @@ if __name__ == "__main__":
     network_graph = model.generate_network_graph(event_timeline)
     print(network_graph)
     model.print_network_graph()
-    model.visualize_network_graph()
+    # model.visualize_network_graph()
