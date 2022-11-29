@@ -9,8 +9,8 @@
 import copy
 import sys
 
-from network_model_interface import NetworkModelInterface
-from adapter import Adapter
+from src.network_model.network_model_interface import NetworkModelInterface
+from src.network_model.adapter import Adapter
 
 
 class NetworkModel_V0_0(NetworkModelInterface):
@@ -242,6 +242,5 @@ if __name__ == "__main__":
     ]
 
     network_graph = model.generate_network_graph(event_timeline)
-    print(network_graph)
     model.print_network_graph()
     # model.visualize_network_graph()

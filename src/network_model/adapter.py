@@ -1,5 +1,6 @@
 
-from grapher import Grapher, Node
+from src.network_model.grapher import Grapher, Node
+import matplotlib.pyplot as plt
 
 IMAGE_CACHE = "image-cache"
 
@@ -192,7 +193,6 @@ class Adapter:
         self.connected_devices = {}
         self.node_list = []
 
-        print(device_list)
         for device_name in self.device_list:
             device = self.device_list[device_name]
             connected_device_list = []
@@ -206,7 +206,7 @@ class Adapter:
                             if connected_device != device_name:
                                 output_dst.append(connected_device)
 
-                                if connected_device not in self.connected_devices:
+                                if connected_device not in connected_device_list:
                                     connected_device_list.append(connected_device)
 
                         self.output_map[output] = output_dst
@@ -240,6 +240,7 @@ class Adapter:
 
     def create_gif(self, input, gif_path):
         timeline = self.create_timeline(input)
+        plt.clf()
         grapher = Grapher(self.node_list)
         grapher.set_image_time(-1)
         grapher.save_graph_as_image(IMAGE_CACHE)

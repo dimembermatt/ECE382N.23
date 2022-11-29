@@ -62,7 +62,7 @@ class Grapher:
             self.edge_colors.append("black")
         
         # TODO get auto generated positions
-        print("Auto-generated positions: " + str(self.pos))
+        # print("Auto-generated positions: " + str(self.pos))
 
         self.screenshot_count = 0
         self.screenshot_list = []
@@ -107,7 +107,7 @@ class Grapher:
         image_name = "capture-" + str(self.screenshot_count) + ".png"
         image_path = os.path.join(folder_path, image_name)
         self.screenshot_list.append(image_path)
-        print("Saving image " + str(self.screenshot_count) + " to: " + str(image_path))
+        # print("Saving image " + str(self.screenshot_count) + " to: " + str(image_path))
 
         plt.savefig(image_path, bbox_inches='tight')
         plt.clf()

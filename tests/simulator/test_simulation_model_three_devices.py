@@ -15,11 +15,13 @@ sys.path.append(CWD)
 from src.application_model.application_model_interface import \
     get_application_model
 from src.energy_model.energy_model_interface import get_energy_model
+from src.network_model.network_model_v0_0 import NetworkModel_V0_0
 
 
 def test_default_app():
     app_model = get_application_model("ApplicationModel_V0_1", CWD)
     energy_model = get_energy_model("EnergyModel_V0_0", CWD)
+    network_model = NetworkModel_V0_0()
 
     device_0 = {
         "device_name": "dev0",
@@ -175,16 +177,19 @@ def test_default_app():
     for device in devices:
         app_model.add_device(device["device_name"], device)
         energy_model.add_device(device["device_name"], device)
+        network_model.add_device(device["device_name"], device)
     energy_model.add_energy_supply(supply_0["supply_name"], supply_0)
 
     event_timeline = app_model.generate_event_timeline()
     energy_usage = energy_model.generate_energy_usage(event_timeline)
 
-    app_model.save_outputs()
-    app_model.visualize_event_timeline()
+    # app_model.save_outputs()
+    # app_model.visualize_event_timeline()
 
-    energy_model.save_outputs()
-    energy_model.visualize_energy_usage()
+    # energy_model.save_outputs()
+    # energy_model.visualize_energy_usage()
+
+    network_graph = network_model.generate_network_graph(event_timeline)
 
 
 if __name__ == "__main__":
