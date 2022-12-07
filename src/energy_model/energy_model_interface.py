@@ -10,6 +10,7 @@ import json
 import sys
 
 import matplotlib.pyplot as plt
+import numpy as np
 from colorhash import ColorHash
 
 
@@ -43,6 +44,16 @@ class EnergyModelInterface:
                 ax.set_ylabel("Power Usage (W)")
                 ax.set_title(f"Device {device_id} Power Consumption Over Time")
                 self._devices[device_id]["ax"] = ax
+                # Print power limit line
+                timestamps = []
+                lastDuration = 0
+                for event in self._energy_usage:
+                    timestamps.append(event["timestamp"])
+                    lastDuration = event["duration"]
+                timestamps.append(timestamps[-1] + lastDuration)
+                max_pwr = self._devices[device_id]["supply"]["supply_voltage"]*self._devices[device_id]["supply"]["max_supply_current"]
+                max_pwr_list = np.full(len(self._energy_usage) + 1,max_pwr)
+                self._devices[device_id]["ax"].plot(timestamps, max_pwr_list)
         else:
             ax = self._axs
             device_id = list(self._devices.keys())[0]
@@ -51,6 +62,15 @@ class EnergyModelInterface:
             ax.set_title(f"Device {device_id} Power Consumption Over Time")
             self._devices[device_id]["ax"] = ax
             self._axs = ax
+            # Print power limit line
+            timestamps = []
+            for event in self._energy_usage:
+                timestamps.append(event["timestamp"])
+                lastDuration = event["duration"]
+            timestamps.append(timestamps[-1] + lastDuration)
+            max_pwr = self._devices[device_id]["supply"]["supply_voltage"]*self._devices[device_id]["supply"]["max_supply_current"]
+            max_pwr_list = np.full(len(self._energy_usage) + 1,max_pwr)
+            self._devices[device_id]["ax"].plot(timestamps, max_pwr_list)
 
         plt.get_current_fig_manager().set_window_title(self._model_name)
 
