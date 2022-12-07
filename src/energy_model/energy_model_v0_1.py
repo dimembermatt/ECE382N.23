@@ -1,9 +1,14 @@
 """_summary_
-@file       energy_model_v0_0.py
+@file       energy_model_v0_1.py
 @author     Matthew Yu (matthewjkyu@gmail.com)
 @brief      Models device energy usage.
+<<<<<<< HEAD:src/energy_model/energy_model_v0_1.py
+@version    0.0.1
+@date       2022-11-27
+=======
 @version    0.0.0
 @date       2022-11-28
+>>>>>>> v0.2.0:src/energy_model/energy_model_v0_0.py
 """
 
 import copy
@@ -12,7 +17,7 @@ import sys
 from energy_model_interface import EnergyModelInterface
 
 
-class EnergyModel_V0_0(EnergyModelInterface):
+class EnergyModel_V0_1(EnergyModelInterface):
     """_summary_
     EnergyModel_V0_0 models a very abstract interpretation of the NoS energy
     usage. It has the following characteristics:
@@ -82,7 +87,7 @@ class EnergyModel_V0_0(EnergyModelInterface):
             energy_event = {
                 "timestamp": event["timestamp"],
                 "duration": event["duration"],
-                "devices": {}
+                "devices": {},
             }
             for device_id, device in event["devices"].items():
                 device_info = self._devices[device_id]
@@ -143,7 +148,7 @@ if __name__ == "__main__":
     except ImportError:
         pass  # no need to fail because of missing dev dependency
 
-    model = EnergyModel_V0_0()
+    model = EnergyModel_V0_1()
 
     device_0 = {
         "device_name": "device_0",

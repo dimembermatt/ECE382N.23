@@ -1,86 +1,49 @@
-
 from adapter import Adapter
 
 input = [
     {
-        'timestamp': 0,
-        'devices': {
-            'device_0': {
-                'cores': {
-                    'core_0': 'dev_0_core_0_task_0'
-                },
-                'hw': ['adc_0']
-            },
-            'device_1': {
-                'cores': {},
-                'hw': []
-            }
+        "timestamp": 0,
+        "devices": {
+            "device_0": {"cores": {"core_0": "dev_0_core_0_task_0"}, "hw": ["adc_0"]},
+            "device_1": {"cores": {}, "hw": []},
         },
-        'cache': [
-            {
-                'output_0': ['device_0']
-            }
-        ]
+        "cache": [{"output_0": ["device_0"]}],
     },
     {
-        'timestamp': 1,
-        'devices': {
-            'device_0': {
-                'cores': {
-                    'core_0': 'dev_0_core_0_task_1'
-                },
-                'hw': ['comm_0']
-            },
-            'device_1': {
-                'cores': {},
-                'hw': []
-            }
+        "timestamp": 1,
+        "devices": {
+            "device_0": {"cores": {"core_0": "dev_0_core_0_task_1"}, "hw": ["comm_0"]},
+            "device_1": {"cores": {}, "hw": []},
         },
-        'cache': [
-            {
-                'output_1': ['device_1']
-            }
-        ]
+        "cache": [{"output_1": ["device_1"]}],
     },
     {
-        'timestamp': 2,
-        'devices': {
-            'device_0': {
-                'cores': {},
-                'hw': []
-            },
-            'device_1': {
-                'cores': {
-                    'core_0': 'dev_1_core_0_task_2'
-                },
-                'hw': ['comm_0']
-            }
+        "timestamp": 2,
+        "devices": {
+            "device_0": {"cores": {}, "hw": []},
+            "device_1": {"cores": {"core_0": "dev_1_core_0_task_2"}, "hw": ["comm_0"]},
         },
-        'cache': [
-            {
-                'output_2': ['device_1']
-            }
-        ]
-    }
+        "cache": [{"output_2": ["device_1"]}],
+    },
 ]
 
 device_0 = {
     "device_name": "device_0",
     "cores": {
         "core_0": {
-            "active_power": 100, # Joules
-            "idle_power": 10, # Joules
+            "active_power": 100,  # Joules
+            "idle_power": 10,  # Joules
         }
     },
     "peripherals": {
         "comm_0": {
-            "active_power": 20, # Joules
-            "idle_power": 10, # Joules
+            "active_power": 20,  # Joules
+            "idle_power": 10,  # Joules
         },
         "adc_0": {
-            "active_power": 10, # Joules
-            "idle_power": 1, # Joules
-        }
+            "active_power": 10,  # Joules
+            "idle_power": 1,  # Joules
+        },
     },
     "schedule": {
         "core_0": [
@@ -90,7 +53,9 @@ device_0 = {
                 "outputs": {
                     "output_0": ["device_0"],
                 },
-                "hw": ["adc_0", ],
+                "hw": [
+                    "adc_0",
+                ],
             },
             {
                 "task_name": "dev_0_core_0_task_1",
@@ -98,11 +63,13 @@ device_0 = {
                 "outputs": {
                     "output_1": ["device_1"],
                 },
-                "hw": ["comm_0", ],
+                "hw": [
+                    "comm_0",
+                ],
             },
         ]
     },
-    "cache": []
+    "cache": [],
 }
 
 device_1 = {
@@ -115,13 +82,13 @@ device_1 = {
     },
     "peripherals": {
         "comm_0": {
-            "active_power": 20, # Joules
-            "idle_power": 10, # Joules
+            "active_power": 20,  # Joules
+            "idle_power": 10,  # Joules
         },
         "adc_0": {
-            "active_power": 10, # Joules
-            "idle_power": 1, # Joules
-        }
+            "active_power": 10,  # Joules
+            "idle_power": 1,  # Joules
+        },
     },
     "schedule": {
         "core_0": [
@@ -131,7 +98,9 @@ device_1 = {
                 "outputs": {
                     "output_2": ["device_1"],
                 },
-                "hw": ["comm_0", ],
+                "hw": [
+                    "comm_0",
+                ],
             },
         ],
         "core_1": [
@@ -159,11 +128,11 @@ device_1 = {
                 },
                 "hw": [],
             },
-        ]
+        ],
     },
-    "cache": []
+    "cache": [],
 }
 
 device_list = [device_0, device_1]
 adapter = Adapter(device_list)
-adapter.create_gif(input, 'test.gif')
+adapter.create_gif(input, "test.gif")

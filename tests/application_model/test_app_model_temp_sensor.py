@@ -11,8 +11,7 @@ import sys
 
 sys.path.append("../../")
 
-from src.application_model.application_model_interface import \
-    get_application_model
+from src.application_model.application_model_interface import get_application_model
 
 
 def test_default_app():
@@ -26,10 +25,8 @@ def test_default_app():
                     "task_name": "Initialize ADC",
                     "duration": 30,
                     "dependencies": [],
-                    "outputs": {
-                        "adc_struct": ["TM4C"]
-                    },
-                    "hw": []
+                    "outputs": {"adc_struct": ["TM4C"]},
+                    "hw": [],
                 },
                 {
                     "task_name": "Sample ADC",
@@ -49,12 +46,10 @@ def test_default_app():
                     "outputs": {
                         "adc_output": [],
                     },
-                    "hw": [
-                        "uart_0"
-                    ]
-                }
+                    "hw": ["uart_0"],
+                },
             ]
-        }
+        },
     }
 
     model.add_device(device_0["device_name"], device_0)

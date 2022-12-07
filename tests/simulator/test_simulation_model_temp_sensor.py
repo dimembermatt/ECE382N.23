@@ -12,8 +12,7 @@ import sys
 CWD = "../../"
 sys.path.append(CWD)
 
-from src.application_model.application_model_interface import \
-    get_application_model
+from src.application_model.application_model_interface import get_application_model
 from src.energy_model.energy_model_interface import get_energy_model
 
 
@@ -35,10 +34,7 @@ def test_default_app():
                 "active_energy": 3,
                 "idle_energy": 1,
             },
-            "adc_0": {
-                "active_energy": 2,
-                "idle_energy": 1
-            }
+            "adc_0": {"active_energy": 2, "idle_energy": 1},
         },
         "schedule": {
             "core_0": [
@@ -46,10 +42,8 @@ def test_default_app():
                     "task_name": "Initialize ADC",
                     "duration": 30,
                     "dependencies": [],
-                    "outputs": {
-                        "adc_struct": ["TM4C"]
-                    },
-                    "hw": []
+                    "outputs": {"adc_struct": ["TM4C"]},
+                    "hw": [],
                 },
                 {
                     "task_name": "Sample ADC",
@@ -69,18 +63,16 @@ def test_default_app():
                     "outputs": {
                         "adc_output": [],
                     },
-                    "hw": [
-                        "uart_0"
-                    ]
-                }
+                    "hw": ["uart_0"],
+                },
             ]
         },
-        "supply_id": "supply_0"
+        "supply_id": "supply_0",
     }
     supply_0 = {
         "supply_name": "supply_0",
         "supply_voltage": 5.0,
-        "max_supply_current": 5.0
+        "max_supply_current": 5.0,
     }
     app_model.add_device(device_0["device_name"], device_0)
     energy_model.add_device(device_0["device_name"], device_0)

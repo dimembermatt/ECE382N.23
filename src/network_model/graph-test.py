@@ -1,4 +1,3 @@
-
 from grapher import Grapher, Node
 
 IMAGE_CACHE = "image-cache"

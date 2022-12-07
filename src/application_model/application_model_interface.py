@@ -52,7 +52,10 @@ class ApplicationModelInterface:
             duration = event["duration"]
             for device_id, device in self._devices.items():
                 for core_id in device["cores"].keys():
-                    if device_id in event["devices"] and core_id in event["devices"][device_id]["cores"]:
+                    if (
+                        device_id in event["devices"]
+                        and core_id in event["devices"][device_id]["cores"]
+                    ):
                         task_name = event["devices"][device_id]["cores"][core_id]
                         idx = 0
                         for idx_, core_ in enumerate(cores):
@@ -65,7 +68,7 @@ class ApplicationModelInterface:
                             color=(c[0] / 255, c[1] / 255, c[2] / 255),
                         )
                         self._ax.text(
-                            x=timestamp + (duration/2),
+                            x=timestamp + (duration / 2),
                             y=idx * 10 + 9,
                             s=task_name,
                             ha="center",
@@ -95,7 +98,9 @@ class ApplicationModelInterface:
         print(f"CPU_UTILIZATION:")
         for device_id, device in self._devices.items():
             for core_id, core_utilization in device["core_utilization"].items():
-                print(f"{device_id}_{core_id}: {core_utilization[0] / core_utilization[1]}")
+                print(
+                    f"{device_id}_{core_id}: {core_utilization[0] / core_utilization[1]}"
+                )
 
     def visualize_event_timeline(self) -> None:
         plt.tight_layout()
@@ -106,6 +111,7 @@ class ApplicationModelInterface:
         plt.savefig("output_event_timeline.jpg")
         with open("output_event_timeline.json", "w") as fp:
             json.dump(self._event_timeline, fp)
+
 
 def get_application_model(name, cwd):
     try:

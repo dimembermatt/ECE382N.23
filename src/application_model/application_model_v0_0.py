@@ -71,7 +71,7 @@ class ApplicationModel_V0_0(ApplicationModelInterface):
                 "timestamp": timestamp,
                 "duration": 1,
                 "devices": {},
-                "cache": []
+                "cache": [],
             }
 
             # Go through each device's schedule, look at the first task
@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
     device_0 = {
         "device_name": "device_0",
-        "cores": {"core_0" : {}},
+        "cores": {"core_0": {}},
         "schedule": {
             "core_0": [
                 {
@@ -176,10 +176,7 @@ if __name__ == "__main__":
 
     device_1 = {
         "device_name": "device_1",
-        "cores": {
-            "core_0" : {},
-            "core_1": {}
-        },
+        "cores": {"core_0": {}, "core_1": {}},
         "schedule": {
             "core_0": [
                 {

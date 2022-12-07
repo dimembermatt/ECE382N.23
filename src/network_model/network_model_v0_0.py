@@ -48,9 +48,9 @@ class NetworkModel_V0_0(NetworkModelInterface):
 
     def generate_network_graph(self, event_timeline) -> dict:
         # Plot event network communication on the graph.
-        
+
         adapter = Adapter(self._devices)
-        adapter.create_gif(event_timeline, 'network-graph.gif')
+        adapter.create_gif(event_timeline, "network-graph.gif")
 
         return super().generate_network_graph()
 
@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
     device_0 = {
         "device_name": "device_0",
-        "cores": {"core_0" : {}},
+        "cores": {"core_0": {}},
         "schedule": {
             "core_0": [
                 {
@@ -103,10 +103,7 @@ if __name__ == "__main__":
 
     device_1 = {
         "device_name": "device_1",
-        "cores": {
-            "core_0" : {},
-            "core_1": {}
-        },
+        "cores": {"core_0": {}, "core_1": {}},
         "schedule": {
             "core_0": [
                 {

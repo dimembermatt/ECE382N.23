@@ -80,7 +80,7 @@ class ApplicationModel_V0_1(ApplicationModelInterface):
                 "timestamp": timestamp,
                 "duration": 0,
                 "devices": {},
-                "cache": []
+                "cache": [],
             }
 
             # Devices with active tasks keep running in the next iteration.

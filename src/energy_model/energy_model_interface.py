@@ -51,8 +51,11 @@ class EnergyModelInterface:
                     timestamps.append(event["timestamp"])
                     lastDuration = event["duration"]
                 timestamps.append(timestamps[-1] + lastDuration)
-                max_pwr = self._devices[device_id]["supply"]["supply_voltage"]*self._devices[device_id]["supply"]["max_supply_current"]
-                max_pwr_list = np.full(len(self._energy_usage) + 1,max_pwr)
+                max_pwr = (
+                    self._devices[device_id]["supply"]["supply_voltage"]
+                    * self._devices[device_id]["supply"]["max_supply_current"]
+                )
+                max_pwr_list = np.full(len(self._energy_usage) + 1, max_pwr)
                 self._devices[device_id]["ax"].plot(timestamps, max_pwr_list)
         else:
             ax = self._axs
@@ -62,14 +65,18 @@ class EnergyModelInterface:
             ax.set_title(f"Device {device_id} Power Consumption Over Time")
             self._devices[device_id]["ax"] = ax
             self._axs = ax
+
             # Print power limit line
             timestamps = []
             for event in self._energy_usage:
                 timestamps.append(event["timestamp"])
-                lastDuration = event["duration"]
-            timestamps.append(timestamps[-1] + lastDuration)
-            max_pwr = self._devices[device_id]["supply"]["supply_voltage"]*self._devices[device_id]["supply"]["max_supply_current"]
-            max_pwr_list = np.full(len(self._energy_usage) + 1,max_pwr)
+                last_duration = event["duration"]
+            timestamps.append(timestamps[-1] + last_duration)
+            max_pwr = (
+                self._devices[device_id]["supply"]["supply_voltage"]
+                * self._devices[device_id]["supply"]["max_supply_current"]
+            )
+            max_pwr_list = np.full(len(self._energy_usage) + 1, max_pwr)
             self._devices[device_id]["ax"].plot(timestamps, max_pwr_list)
 
         plt.get_current_fig_manager().set_window_title(self._model_name)
@@ -131,8 +138,9 @@ class EnergyModelInterface:
     def save_outputs(self):
         plt.tight_layout()
         plt.savefig("output_energy_usage.jpg")
-        with open("output_energy_usage.json", 'w') as fp:
+        with open("output_energy_usage.json", "w") as fp:
             json.dump(self._energy_usage, fp)
+
 
 def get_energy_model(name, cwd):
     try:
