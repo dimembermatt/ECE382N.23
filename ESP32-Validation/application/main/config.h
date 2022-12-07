@@ -2,10 +2,10 @@
 #include "driver/gpio.h"
 #include "esp_adc/adc_oneshot.h"
 
-#define DEVICE_ALEXA
 // #define DEVICE_TEMPERATURE
 // #define DEVICE_MOTION
-// #define DEVICE_AC
+// #define DEVICE_ALEXA
+#define DEVICE_AC
 
 #ifdef DEVICE_ALEXA
 #define PIN_LED 5
