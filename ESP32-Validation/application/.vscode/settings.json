@@ -1,0 +1,13 @@
+{
+    "cmake.configureOnOpen": false,
+    "idf.flashType": "UART",
+    "idf.portWin": "COM14",
+    "idf.adapterTargetName": "esp32c3",
+    "idf.openOcdConfigs": [
+        "board/esp32c3-bridge.cfg"
+    ],
+    "files.associations": {
+        "*.x": "linkerscript",
+        "sdkconfig.h": "c"
+    }
+}
