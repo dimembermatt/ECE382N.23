@@ -13,13 +13,13 @@ CWD = "../../"
 sys.path.append(CWD)
 
 from src.application_model.application_model_interface import get_application_model
-from src.energy_model.energy_model_interface import get_energy_model
 from src.network_model.network_model_v0_0 import NetworkModel_V0_0
+from src.power_model.power_model_interface import get_power_model
 
 
 def test_default_app():
     app_model = get_application_model("ApplicationModel_V0_1", CWD)
-    energy_model = get_energy_model("EnergyModel_V0_0", CWD)
+    power_model = get_power_model("PowerModel_V0_0", CWD)
     network_model = NetworkModel_V0_0()
 
     device_0 = {
@@ -27,18 +27,18 @@ def test_default_app():
         "cores": {
             "core_0": {
                 "frequency": 1,
-                "active_energy": 5,
-                "idle_energy": 1,
+                "active_power": 5,
+                "idle_power": 1,
             }
         },
         "peripherals": {
             "gpio": {
-                "active_energy": 100,
-                "idle_energy": 15,
+                "active_power": 100,
+                "idle_power": 15,
             },
             "modem": {
-                "active_energy": 50,
-                "idle_energy": 10,
+                "active_power": 50,
+                "idle_power": 10,
             },
         },
         "schedule": {
@@ -76,14 +76,14 @@ def test_default_app():
         "cores": {
             "core_0": {
                 "frequency": 1,
-                "active_energy": 5,
-                "idle_energy": 3,
+                "active_power": 5,
+                "idle_power": 3,
             }
         },
         "peripherals": {
             "adc": {
-                "active_energy": 5,
-                "idle_energy": 3,
+                "active_power": 5,
+                "idle_power": 3,
             }
         },
         "schedule": {
@@ -116,14 +116,14 @@ def test_default_app():
         "cores": {
             "core_0": {
                 "frequency": 1,
-                "active_energy": 5,
-                "idle_energy": 3,
+                "active_power": 5,
+                "idle_power": 3,
             }
         },
         "peripherals": {
             "adc": {
-                "active_energy": 5,
-                "idle_energy": 3,
+                "active_power": 5,
+                "idle_power": 3,
             }
         },
         "schedule": {
@@ -154,14 +154,14 @@ def test_default_app():
         "cores": {
             "core_0": {
                 "frequency": 1,
-                "active_energy": 5,
-                "idle_energy": 2,
+                "active_power": 5,
+                "idle_power": 2,
             }
         },
         "peripherals": {
             "dac": {
-                "active_energy": 20,
-                "idle_energy": 5,
+                "active_power": 20,
+                "idle_power": 5,
             }
         },
         "schedule": {
@@ -190,14 +190,14 @@ def test_default_app():
         "cores": {
             "core_0": {
                 "frequency": 1,
-                "active_energy": 5,
-                "idle_energy": 3,
+                "active_power": 5,
+                "idle_power": 3,
             }
         },
         "peripherals": {
             "adc": {
-                "active_energy": 8,
-                "idle_energy": 3,
+                "active_power": 8,
+                "idle_power": 3,
             }
         },
         "schedule": {
@@ -232,18 +232,18 @@ def test_default_app():
     devices = [device_0, device_1, device_2, device_5, device_6]
     for device in devices:
         app_model.add_device(device["device_name"], device)
-        energy_model.add_device(device["device_name"], device)
+        power_model.add_device(device["device_name"], device)
         network_model.add_device(device["device_name"], device)
-    energy_model.add_energy_supply(supply_0["supply_name"], supply_0)
+    power_model.add_power_supply(supply_0["supply_name"], supply_0)
 
     event_timeline = app_model.generate_event_timeline()
-    energy_usage = energy_model.generate_energy_usage(event_timeline)
+    power_usage = power_model.generate_power_usage(event_timeline)
 
     app_model.save_outputs()
     app_model.visualize_event_timeline()
 
-    energy_model.save_outputs()
-    energy_model.visualize_energy_usage()
+    power_model.save_outputs()
+    power_model.visualize_power_usage()
 
     network_graph = network_model.generate_network_graph(event_timeline)
 

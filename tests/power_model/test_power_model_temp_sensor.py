@@ -1,7 +1,7 @@
 """_summary_
-@file       test_energy_model_temp_sensor.py
+@file       test_power_model_temp_sensor.py
 @author     Matthew Yu (matthewjkyu@gmail.com)
-@brief      Entry point for testing the energy model. The device under test
+@brief      Entry point for testing the power model. The device under test
             is a TM4C masquerading as a temperature sensor.
 @version    0.0.0
 @data       2022-10-28
@@ -11,26 +11,26 @@ import sys
 
 sys.path.append("../../")
 
-from src.energy_model.energy_model_interface import get_energy_model
+from src.power_model.power_model_interface import get_power_model
 
 
 def test_default_app():
-    model = get_energy_model("EnergyModel_V0_0", "../../")
+    model = get_power_model("PowerModel_V0_0", "../../")
     device_0 = {
         "device_name": "TM4C",
         "cores": {
             "core_0": {
                 "frequency": 1,
-                "active_energy": 5,
-                "idle_energy": 1,
+                "active_power": 5,
+                "idle_power": 1,
             }
         },
         "peripherals": {
             "uart_0": {
-                "active_energy": 3,
-                "idle_energy": 1,
+                "active_power": 3,
+                "idle_power": 1,
             },
-            "adc_0": {"active_energy": 2, "idle_energy": 1},
+            "adc_0": {"active_power": 2, "idle_power": 1},
         },
         "schedule": {
             "core_0": [
@@ -71,7 +71,7 @@ def test_default_app():
         "max_supply_current": 5.0,
     }
     model.add_device(device_0["device_name"], device_0)
-    model.add_energy_supply(supply_0["supply_name"], supply_0)
+    model.add_power_supply(supply_0["supply_name"], supply_0)
 
     event_timeline = [
         {
@@ -95,11 +95,11 @@ def test_default_app():
             "cache": [{"adc_output": []}],
         },
     ]
-    energy_usage = model.generate_energy_usage(event_timeline)
-    print(energy_usage)
-    model.print_energy_usage()
+    power_usage = model.generate_power_usage(event_timeline)
+    print(power_usage)
+    model.print_power_usage()
     model.save_outputs()
-    model.visualize_energy_usage()
+    model.visualize_power_usage()
 
 
 if __name__ == "__main__":

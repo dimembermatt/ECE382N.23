@@ -1,50 +1,38 @@
 """_summary_
-@file       energy_model_v0_1.py
+@file       power_model_v0_1.py
 @author     Matthew Yu (matthewjkyu@gmail.com)
-@brief      Models device energy usage.
-<<<<<<< HEAD:src/energy_model/energy_model_v0_1.py
-@version    0.0.1
-@date       2022-11-27
-=======
+@brief      Models device power usage.
 @version    0.0.0
 @date       2022-11-28
->>>>>>> v0.2.0:src/energy_model/energy_model_v0_0.py
 """
 
 import copy
 import sys
 
-from energy_model_interface import EnergyModelInterface
+from power_model_interface import PowerModelInterface
 
 
-class EnergyModel_V0_1(EnergyModelInterface):
+class PowerModel_V0_1(PowerModelInterface):
     """_summary_
-    EnergyModel_V0_0 models a very abstract interpretation of the NoS energy
-    usage. It has the following characteristics:
-    - devices have a static energy source that provides a maximum fixed amount of
-      energy at any moment.
-    - hardware for each device is given a static idle and active energy
-      consumption value, which is used for determining energy usage over time.
-    - timing is determined by the ApplicationModel event timeline.
-
-    NOTE: V0.1 (Energy expansion 1) has the following characteristics:
-    - multiple devices can share a single energy source.
-    - energy consumption of CPU is based on the CPU utilization rate and
+    PowerModel_V0_1 (Power expansion 1) models a very abstract interpretation
+    of the NoS power usage. It has the following characteristics:
+    - multiple devices can share a single power source.
+    - power consumption of CPU is based on the CPU utilization rate and
       characteristics (frequency, supply voltage, current draw).
-    - the energy source has voltage and current characteristics within some
+    - the power source has voltage and current characteristics within some
       distribution.
     """
 
     def __init__(self) -> None:
-        super().__init__("V0_0 Energy Model")
+        super().__init__("V0_1 Power Model")
 
     def add_device(self, device_name, device) -> bool:
         """_summary_
-        Adds a device to the energy model. A device must have the following
+        Adds a device to the power model. A device must have the following
         attributes:
         - device name (str)
         - a set of cores and hardware peripherals, each with:
-            - a static idle and active energy consumption value (float, float)
+            - a static idle and active power consumption value (float, float)
 
         Args:
             device_name (_type_): _description_
@@ -56,12 +44,12 @@ class EnergyModel_V0_1(EnergyModelInterface):
 
         return super().add_device(device_name, device)
 
-    def add_energy_supply(self, supply_name, supply) -> bool:
+    def add_power_supply(self, supply_name, supply) -> bool:
         """_summary_
-        Adds a energy supply to the energy model. A energy supply must have the
+        Adds a power supply to the power model. A power supply must have the
         following attributes:
         - supply name (str)
-        - a supply energy characteristics, including supply voltage and maximum
+        - a supply power characteristics, including supply voltage and maximum
           draw (float).
 
         Args:
@@ -71,20 +59,20 @@ class EnergyModel_V0_1(EnergyModelInterface):
         Returns:
             bool: _description_
         """
-        return super().add_energy_supply(supply_name, supply)
+        return super().add_power_supply(supply_name, supply)
 
-    def generate_energy_usage(self, event_timeline):
-        # Plot event energy usage on the timeline.
+    def generate_power_usage(self, event_timeline):
+        # Plot event power usage on the timeline.
         for device_id in self._devices.keys():
             self._devices[device_id]["events"] = []
-            if self._devices[device_id]["supply_id"] in self._energy_supplies:
-                self._devices[device_id]["supply"] = self._energy_supplies[
+            if self._devices[device_id]["supply_id"] in self._power_supplies:
+                self._devices[device_id]["supply"] = self._power_supplies[
                     self._devices[device_id]["supply_id"]
                 ]
                 del self._devices[device_id]["supply_id"]
 
         for event in event_timeline:
-            energy_event = {
+            power_event = {
                 "timestamp": event["timestamp"],
                 "duration": event["duration"],
                 "devices": {},
@@ -104,38 +92,36 @@ class EnergyModel_V0_1(EnergyModelInterface):
                     idle_consumers.remove(hw_id)
                     active_consumers.append(hw_id)
 
-                energy_event["devices"][device_id] = []
+                power_event["devices"][device_id] = []
 
                 y = 0
-                # Calculate energy per consumer
+                # Calculate power per consumer
                 for consumer in active_consumers:
                     if "core" in consumer:
-                        energy_usage = device_info["cores"][consumer]["active_energy"]
+                        power_usage = device_info["cores"][consumer]["active_power"]
                     else:
-                        energy_usage = device_info["peripherals"][consumer][
-                            "active_energy"
+                        power_usage = device_info["peripherals"][consumer][
+                            "active_power"
                         ]
 
-                    energy_event["devices"][device_id].append(
-                        [consumer, "active", energy_usage]
+                    power_event["devices"][device_id].append(
+                        [consumer, "active", power_usage]
                     )
 
-                # Calculate energy per consumer
+                # Calculate power per consumer
                 for consumer in idle_consumers:
                     if "core" in consumer:
-                        energy_usage = device_info["cores"][consumer]["idle_energy"]
+                        power_usage = device_info["cores"][consumer]["idle_power"]
                     else:
-                        energy_usage = device_info["peripherals"][consumer][
-                            "idle_energy"
-                        ]
+                        power_usage = device_info["peripherals"][consumer]["idle_power"]
 
-                    energy_event["devices"][device_id].append(
-                        [consumer, "idle", energy_usage]
+                    power_event["devices"][device_id].append(
+                        [consumer, "idle", power_usage]
                     )
 
-            self._energy_usage.append(energy_event)
+            self._power_usage.append(power_event)
 
-        return super().generate_energy_usage()
+        return super().generate_power_usage()
 
 
 if __name__ == "__main__":
@@ -148,24 +134,24 @@ if __name__ == "__main__":
     except ImportError:
         pass  # no need to fail because of missing dev dependency
 
-    model = EnergyModel_V0_1()
+    model = PowerModel_V0_1()
 
     device_0 = {
         "device_name": "device_0",
         "cores": {
             "core_0": {
-                "active_energy": 5,  # Joules
-                "idle_energy": 1,  # Joules
+                "active_power": 5,  # Joules
+                "idle_power": 1,  # Joules
             }
         },
         "peripherals": {
             "comm_0": {
-                "active_energy": 3,  # Joules
-                "idle_energy": 1,  # Joules
+                "active_power": 3,  # Joules
+                "idle_power": 1,  # Joules
             },
             "adc_0": {
-                "active_energy": 2,  # Joules
-                "idle_energy": 1,  # Joules
+                "active_power": 2,  # Joules
+                "idle_power": 1,  # Joules
             },
         },
         "supply_id": "supply_0",
@@ -175,18 +161,18 @@ if __name__ == "__main__":
         "device_name": "device_1",
         "cores": {
             "core_0": {
-                "active_energy": 5,
-                "idle_energy": 1,
+                "active_power": 5,
+                "idle_power": 1,
             },
             "core_1": {
-                "active_energy": 5,
-                "idle_energy": 1,
+                "active_power": 5,
+                "idle_power": 1,
             },
         },
         "peripherals": {
             "comm_0": {
-                "active_energy": 3,  # Joules
-                "idle_energy": 1,  # Joules
+                "active_power": 3,  # Joules
+                "idle_power": 1,  # Joules
             },
         },
         "supply_id": "supply_1",
@@ -207,8 +193,8 @@ if __name__ == "__main__":
         "max_supply_current": 2.5,  # 2.5A
     }
 
-    model.add_energy_supply(supply_0["supply_name"], supply_0)
-    model.add_energy_supply(supply_1["supply_name"], supply_1)
+    model.add_power_supply(supply_0["supply_name"], supply_0)
+    model.add_power_supply(supply_1["supply_name"], supply_1)
 
     event_timeline = [
         {
@@ -272,7 +258,7 @@ if __name__ == "__main__":
         },
     ]
 
-    energy_usage = model.generate_energy_usage(event_timeline)
-    print(energy_usage)
-    model.print_energy_usage()
-    model.visualize_energy_usage()
+    power_usage = model.generate_power_usage(event_timeline)
+    print(power_usage)
+    model.print_power_usage()
+    model.visualize_power_usage()

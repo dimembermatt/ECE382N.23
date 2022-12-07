@@ -13,28 +13,28 @@ CWD = "../../"
 sys.path.append(CWD)
 
 from src.application_model.application_model_interface import get_application_model
-from src.energy_model.energy_model_interface import get_energy_model
+from src.power_model.power_model_interface import get_power_model
 
 
 def test_default_app():
     app_model = get_application_model("ApplicationModel_V0_1", CWD)
-    energy_model = get_energy_model("EnergyModel_V0_0", CWD)
+    power_model = get_power_model("PowerModel_V0_0", CWD)
 
     device_0 = {
         "device_name": "TM4C",
         "cores": {
             "core_0": {
                 "frequency": 1,
-                "active_energy": 5,
-                "idle_energy": 1,
+                "active_power": 5,
+                "idle_power": 1,
             }
         },
         "peripherals": {
             "uart_0": {
-                "active_energy": 3,
-                "idle_energy": 1,
+                "active_power": 3,
+                "idle_power": 1,
             },
-            "adc_0": {"active_energy": 2, "idle_energy": 1},
+            "adc_0": {"active_power": 2, "idle_power": 1},
         },
         "schedule": {
             "core_0": [
@@ -75,17 +75,17 @@ def test_default_app():
         "max_supply_current": 5.0,
     }
     app_model.add_device(device_0["device_name"], device_0)
-    energy_model.add_device(device_0["device_name"], device_0)
-    energy_model.add_energy_supply(supply_0["supply_name"], supply_0)
+    power_model.add_device(device_0["device_name"], device_0)
+    power_model.add_power_supply(supply_0["supply_name"], supply_0)
 
     event_timeline = app_model.generate_event_timeline()
-    energy_usage = energy_model.generate_energy_usage(event_timeline)
+    power_usage = power_model.generate_power_usage(event_timeline)
 
     app_model.save_outputs()
     app_model.visualize_event_timeline()
 
-    energy_model.save_outputs()
-    energy_model.visualize_energy_usage()
+    power_model.save_outputs()
+    power_model.visualize_power_usage()
 
 
 if __name__ == "__main__":

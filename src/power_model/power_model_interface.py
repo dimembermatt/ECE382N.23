@@ -1,7 +1,7 @@
 """_summary_
-@file       energy_model_interface.py
+@file       power_model_interface.py
 @author     Matthew Yu (matthewjkyu@gmail.com)
-@brief      Provides the abstraction interface for modeling device energy usage.
+@brief      Provides the abstraction interface for modeling device power usage.
 @version    0.0.0
 @date       2022-11-28
 """
@@ -14,11 +14,11 @@ import numpy as np
 from colorhash import ColorHash
 
 
-class EnergyModelInterface:
+class PowerModelInterface:
     def __init__(self, model_name) -> None:
         self._devices = {}
-        self._energy_supplies = {}
-        self._energy_usage = []
+        self._power_supplies = {}
+        self._power_usage = []
         self._fig, self._ax = None, None
         self._model_name = model_name
 
@@ -28,13 +28,13 @@ class EnergyModelInterface:
         self._devices[device_name] = device
         return True
 
-    def add_energy_supply(self, supply_name, supply) -> bool:
-        if supply_name in self._energy_supplies:
+    def add_power_supply(self, supply_name, supply) -> bool:
+        if supply_name in self._power_supplies:
             return False
-        self._energy_supplies[supply_name] = supply
+        self._power_supplies[supply_name] = supply
         return True
 
-    def generate_energy_usage(self) -> dict:
+    def generate_power_usage(self) -> dict:
         # Generate y components.
         self._fig, self._axs = plt.subplots(len(self._devices.keys()))
 
@@ -47,7 +47,7 @@ class EnergyModelInterface:
                 # Print power limit line
                 timestamps = []
                 lastDuration = 0
-                for event in self._energy_usage:
+                for event in self._power_usage:
                     timestamps.append(event["timestamp"])
                     lastDuration = event["duration"]
                 timestamps.append(timestamps[-1] + lastDuration)
@@ -55,7 +55,7 @@ class EnergyModelInterface:
                     self._devices[device_id]["supply"]["supply_voltage"]
                     * self._devices[device_id]["supply"]["max_supply_current"]
                 )
-                max_pwr_list = np.full(len(self._energy_usage) + 1, max_pwr)
+                max_pwr_list = np.full(len(self._power_usage) + 1, max_pwr)
                 self._devices[device_id]["ax"].plot(timestamps, max_pwr_list)
         else:
             ax = self._axs
@@ -68,7 +68,7 @@ class EnergyModelInterface:
 
             # Print power limit line
             timestamps = []
-            for event in self._energy_usage:
+            for event in self._power_usage:
                 timestamps.append(event["timestamp"])
                 last_duration = event["duration"]
             timestamps.append(timestamps[-1] + last_duration)
@@ -76,23 +76,23 @@ class EnergyModelInterface:
                 self._devices[device_id]["supply"]["supply_voltage"]
                 * self._devices[device_id]["supply"]["max_supply_current"]
             )
-            max_pwr_list = np.full(len(self._energy_usage) + 1, max_pwr)
+            max_pwr_list = np.full(len(self._power_usage) + 1, max_pwr)
             self._devices[device_id]["ax"].plot(timestamps, max_pwr_list)
 
         plt.get_current_fig_manager().set_window_title(self._model_name)
 
-        # For each device, plot event hardware energy usage onto the timeline.
-        for event in self._energy_usage:
+        # For each device, plot event hardware power usage onto the timeline.
+        for event in self._power_usage:
             timestamp = event["timestamp"]
             duration = event["duration"]
             for device_id, device in event["devices"].items():
                 device_info = self._devices[device_id]
                 y = 0
-                for consumer, status, energy_usage in device:
+                for consumer, status, power_usage in device:
                     c = ColorHash(consumer).rgb
                     device_info["ax"].bar(
                         [timestamp + duration / 2],
-                        [energy_usage],
+                        [power_usage],
                         bottom=y,
                         width=duration,
                         label=f"{consumer}",
@@ -100,57 +100,57 @@ class EnergyModelInterface:
                     )
                     device_info["ax"].text(
                         x=timestamp + duration / 2,
-                        y=y + energy_usage / 2,
+                        y=y + power_usage / 2,
                         s=f"{consumer}",
                         ha="center",
                         va="top",
                         color="black",
                     )
-                    y += energy_usage
+                    y += power_usage
 
-        return self._energy_usage
+        return self._power_usage
 
-    def get_energy_usage_step(self, step) -> (bool, dict):
-        if step < 0 or step >= len(self._energy_usage):
+    def get_power_usage_step(self, step) -> (bool, dict):
+        if step < 0 or step >= len(self._power_usage):
             return (False, {})
         else:
-            return (True, self._energy_usage[step])
+            return (True, self._power_usage[step])
 
-    def print_energy_usage(self) -> None:
-        for event in self._energy_usage:
+    def print_power_usage(self) -> None:
+        for event in self._power_usage:
             print(f"TIME: {event['timestamp']}")
             print(event["duration"])
             for device_id, device in event["devices"].items():
-                print(f"Device {device_id} energy usage:")
+                print(f"Device {device_id} power usage:")
                 sum = 0
-                for consumer, status, energy_usage in device:
-                    print(f"\t{consumer} ({status}) used {energy_usage} J")
-                    sum += energy_usage
+                for consumer, status, power_usage in device:
+                    print(f"\t{consumer} ({status}) used {power_usage} J")
+                    sum += power_usage
 
                 print(f"\tSum: {sum}")
-                print(f"\tAvailable energy: {0}")
+                print(f"\tAvailable power: {0}")
             print()
 
-    def visualize_energy_usage(self) -> None:
+    def visualize_power_usage(self) -> None:
         plt.tight_layout()
         plt.show()
 
     def save_outputs(self):
         plt.tight_layout()
-        plt.savefig("output_energy_usage.jpg")
-        with open("output_energy_usage.json", "w") as fp:
-            json.dump(self._energy_usage, fp)
+        plt.savefig("output_power_usage.jpg")
+        with open("output_power_usage.json", "w") as fp:
+            json.dump(self._power_usage, fp)
 
 
-def get_energy_model(name, cwd):
+def get_power_model(name, cwd):
     try:
-        sys.path.append(cwd + "src/energy_model/")
-        from energy_model_v0_0 import EnergyModel_V0_0
+        sys.path.append(cwd + "src/power_model/")
+        from power_model_v0_0 import PowerModel_V0_0
     except ImportError:
         raise Exception("Unable to load models.")
 
     match name:
-        case "EnergyModel_V0_0":
-            return EnergyModel_V0_0()
+        case "PowerModel_V0_0":
+            return PowerModel_V0_0()
         case _:
-            raise Exception("No energy model specified.")
+            raise Exception("No power model specified.")
