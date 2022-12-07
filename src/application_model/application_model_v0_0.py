@@ -3,7 +3,7 @@
 @author     Matthew Yu (matthewjkyu@gmail.com)
 @brief      Models device applications.
 @version    0.0.0
-@date       2022-11-23
+@date       2022-11-28
 """
 
 import copy
@@ -18,38 +18,16 @@ class ApplicationModel_V0_0(ApplicationModelInterface):
     has the following characteristics:
     - timing is event driven and the model evaluates devices and device tasks
       when an event starts or finishes.
-
-    NOTE: V0.1 (Application expansion 1) has the following characteristics:
-    - device schedules are ordered by some fixed time resolution.
-    - device tasks can take more than one cycle to execute.
-    - device cores have a core frequency that affect execution time.
-    - the model evaluates devices at each time step.
-
-
-    - all devices can talk to other devices in the network and transmission of
-      data between devices is instantaneous and data is represented as a single
-      communication.
-    - a device has a static power source that provides a maximum fixed amount of
-      energy at any moment.
-
-    NOTE: V0.3 (Network expansion 1) has the following characteristics:
-    - devices have a physical location in space.
-    - devices have a communication range that affects who they can talk to.
-    - transmission of data takes some period of time relative to the data type
     """
 
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__("V0_0 Application Model")
 
     def add_device(self, device_name, device) -> bool:
         """_summary_
         Adds a device to the application model. A device must have the following
         attributes:
         - device name (str)
-
-        - a logical position consisting of a list of other devices that may or
-          may not exist with which the device connects to (list(str))
-
         - a logically ordered scheduling and partitioning scheme for a number of
           cores on the device where each task:
             - specifies the input dependencies and output results.
@@ -61,9 +39,6 @@ class ApplicationModel_V0_0(ApplicationModelInterface):
         Returns:
             bool: _description_
         """
-
-        # TODO: verify that device has the above attributes.
-
         return super().add_device(device_name, device)
 
     def generate_event_timeline(self) -> dict:
@@ -92,7 +67,12 @@ class ApplicationModel_V0_0(ApplicationModelInterface):
         timestamp = 0
         while True:
             timeline_complete = True
-            timeline_entry = {"timestamp": timestamp, "devices": {}, "cache": []}
+            timeline_entry = {
+                "timestamp": timestamp,
+                "duration": 1,
+                "devices": {},
+                "cache": [],
+            }
 
             # Go through each device's schedule, look at the first task
             # If the first task has no remaining dependencies, pop from schedule
@@ -111,6 +91,8 @@ class ApplicationModel_V0_0(ApplicationModelInterface):
                         deps_fulfilled = True
                         if len(task["dependencies"]) > 0:
                             for dependency in task["dependencies"]:
+                                if "cache" not in device:
+                                    device["cache"] = []
                                 if dependency not in device["cache"]:
                                     deps_fulfilled = False
 
@@ -137,7 +119,10 @@ class ApplicationModel_V0_0(ApplicationModelInterface):
             for output_dict in timeline_entry["cache"]:
                 for output_id, output_targets in output_dict.items():
                     for output_target in output_targets:
-                        devices[output_target]["cache"].append(output_id)
+                        if "cache" not in devices[output_target]:
+                            devices[output_target]["cache"] = [output_id]
+                        else:
+                            devices[output_target]["cache"].append(output_id)
 
             self._event_timeline.append(timeline_entry)
             timestamp += 1
@@ -161,6 +146,7 @@ if __name__ == "__main__":
 
     device_0 = {
         "device_name": "device_0",
+        "cores": {"core_0": {}},
         "schedule": {
             "core_0": [
                 {
@@ -190,8 +176,21 @@ if __name__ == "__main__":
 
     device_1 = {
         "device_name": "device_1",
+        "cores": {"core_0": {}, "core_1": {}},
         "schedule": {
             "core_0": [
+                {
+                    "task_name": "task_AA",
+                    "dependencies": [],
+                    "outputs": {},
+                    "hw": [],
+                },
+                {
+                    "task_name": "task_AA",
+                    "dependencies": [],
+                    "outputs": {},
+                    "hw": [],
+                },
                 {
                     "task_name": "task_C",
                     "dependencies": ["output_1"],
@@ -253,4 +252,5 @@ if __name__ == "__main__":
     event_timeline = model.generate_event_timeline()
     print(event_timeline)
     model.print_event_timeline()
+    model.save_outputs()
     model.visualize_event_timeline()
