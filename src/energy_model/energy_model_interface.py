@@ -41,7 +41,7 @@ class EnergyModelInterface:
         if len(self._devices.keys()) > 1:
             for ax, device_id in zip(self._axs, self._devices.keys()):
                 ax.set_xlabel("Time (cycles)")
-                ax.set_ylabel("Power Usage (W)")
+                ax.set_ylabel("Power Usage (mW)")
                 ax.set_title(f"Device {device_id} Power Consumption Over Time")
                 self._devices[device_id]["ax"] = ax
                 # Print power limit line
@@ -61,7 +61,7 @@ class EnergyModelInterface:
             ax = self._axs
             device_id = list(self._devices.keys())[0]
             ax.set_xlabel("Time (cycles)")
-            ax.set_ylabel("Power Usage (W)")
+            ax.set_ylabel("Power Usage (mW)")
             ax.set_title(f"Device {device_id} Power Consumption Over Time")
             self._devices[device_id]["ax"] = ax
             self._axs = ax
@@ -145,12 +145,12 @@ class EnergyModelInterface:
 def get_energy_model(name, cwd):
     try:
         sys.path.append(cwd + "src/energy_model/")
-        from energy_model_v0_0 import EnergyModel_V0_0
+        from energy_model_v0_1 import EnergyModel_V0_1
     except ImportError:
         raise Exception("Unable to load models.")
 
     match name:
-        case "EnergyModel_V0_0":
-            return EnergyModel_V0_0()
+        case "EnergyModel_V0_1":
+            return EnergyModel_V0_1()
         case _:
             raise Exception("No energy model specified.")
