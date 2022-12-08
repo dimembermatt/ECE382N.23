@@ -25,8 +25,9 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
 #include "freertos/task.h"
-#include "sdkconfig.h"
 #include "led_strip.h"
+#include "sdkconfig.h"
+
 
 static led_strip_handle_t led_strip;
 
@@ -45,17 +46,16 @@ ledc_init(void) {
 	led_strip_clear(led_strip);
 }
 
-void set_ledc(int on)
-{
+void
+set_ledc(int on) {
 	/* If the addressable LED is enabled */
-	if (on) {
-		/* Set the LED pixel using RGB from 0 (0%) to 255 (100%) for each color
-		 */
-		led_strip_set_pixel(led_strip, 0, 16, 16, 16);
-		/* Refresh the strip to send data */
+	if (on == 1) {
+		led_strip_set_pixel(led_strip, 0, 255, 255, 255);
+		led_strip_refresh(led_strip);
+	} else if (on == 2) {
+		led_strip_set_pixel(led_strip, 0, 0, 255, 255);
 		led_strip_refresh(led_strip);
 	} else {
-		/* Set all LED off to clear all pixels */
 		led_strip_clear(led_strip);
 	}
 }
@@ -83,6 +83,7 @@ task_alexa(void *arg) {
 	gpio_config(&io_conf);
 
 	gpio_set_level(PIN_GPIO_OUT, 0);
+	ledc_init();
 
 	while (1) {
 		motion      = gpio_get_level(PIN_GPIO_MOTION);
@@ -92,28 +93,43 @@ task_alexa(void *arg) {
 			if (AC == 0 && in_house == 1 && temperature == 1) {
 				printf("AC turned on!\n");
 				AC = 1;
+				gpio_set_level(PIN_GPIO_OUT, AC);
+				set_ledc(2);
+				vTaskDelay(pdMS_TO_TICKS(500));
+				set_ledc(0);
 			}
 		}
 		if (prev_temperature == 0 && temperature == 1) {
 			if (AC == 0 && in_house == 1) {
 				printf("AC turned on!\n");
 				AC = 1;
+				gpio_set_level(PIN_GPIO_OUT, AC);
+				set_ledc(2);
+				vTaskDelay(pdMS_TO_TICKS(500));
+				set_ledc(0);
 			}
 		}
 		if (AC == 1 && in_house == 0) {
 			printf("AC turned off!\n");
 			AC = 0;
+			gpio_set_level(PIN_GPIO_OUT, AC);
+			set_ledc(2);
+			vTaskDelay(pdMS_TO_TICKS(500));
+			set_ledc(0);
 		}
 		if (AC == 1 && prev_temperature == 1 && temperature == 0) {
 			printf("AC turned off!\n");
 			AC = 0;
+			gpio_set_level(PIN_GPIO_OUT, AC);
+			set_ledc(2);
+			vTaskDelay(pdMS_TO_TICKS(500));
+			set_ledc(0);
 		}
-		gpio_set_level(PIN_GPIO_OUT, AC);
 
 		prev_motion      = motion;
 		prev_temperature = temperature;
 
-		vTaskDelay(pdMS_TO_TICKS(10));
+		vTaskDelay(pdMS_TO_TICKS(100));
 	}
 
 	vTaskDelete(NULL);
@@ -134,6 +150,9 @@ task_temperature(void *arg) {
 	io_conf.pull_down_en  = 0;
 	io_conf.pull_up_en    = 0;
 	gpio_config(&io_conf);
+	io_conf.mode          = GPIO_MODE_OUTPUT;
+	io_conf.pin_bit_mask  = (1ULL << PIN_TASK_ADC);
+	gpio_config(&io_conf);
 
 	adc_oneshot_unit_handle_t adc1_handle;
 	adc_oneshot_unit_init_cfg_t init_config1 = {
@@ -148,12 +167,21 @@ task_temperature(void *arg) {
 	ESP_ERROR_CHECK(
 	    adc_oneshot_config_channel(adc1_handle, PIN_ADC_TEMPERATURE, &config));
 
+	float temperature_reading = 0;
+
 	while (1) {
+
+		gpio_set_level(PIN_TASK_ADC, 1);
+		for (int i = 0; i < 100; i++) {
 		ESP_ERROR_CHECK(adc_oneshot_read(
 		    adc1_handle, PIN_ADC_TEMPERATURE, &input_temperature_raw));
+		}
+		gpio_set_level(PIN_TASK_ADC, 0);
 
 		// printf("Temperature: %d\n", input_temperature_raw);
-		overtemp = input_temperature_raw >= 2048;
+		temperature_reading =
+		    temperature_reading * 0.8 + input_temperature_raw * 0.2;
+		overtemp = temperature_reading >= 2048;
 
 		if (prev_overtemp == 0 && overtemp == 1) {
 			printf("Overtemp active\n");
@@ -213,7 +241,7 @@ task_motion(void *arg) {
 #ifdef DEVICE_AC
 static void
 task_ac(void *arg) {
-    int alexa_input;
+	int alexa_input;
 	printf("AC task started\n");
 
 	gpio_config_t io_conf = {};
@@ -224,17 +252,28 @@ task_ac(void *arg) {
 	io_conf.pull_up_en    = 0;
 	gpio_config(&io_conf);
 
-    ledc_init();
+	io_conf.intr_type    = GPIO_INTR_DISABLE;
+	io_conf.mode         = GPIO_MODE_OUTPUT;
+	io_conf.pin_bit_mask = (1ULL << PIN_GPIO_OUT);
+	io_conf.pull_down_en = 0;
+	io_conf.pull_up_en   = 0;
+	gpio_config(&io_conf);
+
+	ledc_init();
+	gpio_set_level(PIN_GPIO_OUT, 0);
 
 	while (1) {
-        alexa_input = gpio_get_level(PIN_GPIO_ALEXA);
-        if (alexa_input == 1) {
-            set_ledc(1);
-        } else {
-            set_ledc(0);
-        }
+		alexa_input = gpio_get_level(PIN_GPIO_ALEXA);
+		vTaskDelay(pdMS_TO_TICKS(50));
+		if (alexa_input == 1) {
+			set_ledc(1);
+			gpio_set_level(PIN_GPIO_OUT, 1);
+		} else {
+			set_ledc(0);
+			gpio_set_level(PIN_GPIO_OUT, 0);
+		}
 
-        vTaskDelay(pdMS_TO_TICKS(100));
+		vTaskDelay(pdMS_TO_TICKS(100));
 	}
 
 	vTaskDelete(NULL);

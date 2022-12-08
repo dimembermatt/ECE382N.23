@@ -4,8 +4,8 @@
 
 // #define DEVICE_TEMPERATURE
 // #define DEVICE_MOTION
-// #define DEVICE_ALEXA
-#define DEVICE_AC
+#define DEVICE_ALEXA
+// #define DEVICE_AC
 
 #ifdef DEVICE_ALEXA
 #define PIN_LED 5
@@ -17,6 +17,7 @@
 #ifdef DEVICE_TEMPERATURE
 #define PIN_GPIO_OUT 0
 #define PIN_ADC_TEMPERATURE ADC_CHANNEL_1  // pin 1
+#define PIN_TASK_ADC 4
 #endif
 
 #ifdef DEVICE_MOTION
@@ -26,4 +27,5 @@
 
 #ifdef DEVICE_AC
 #define PIN_GPIO_ALEXA 0
+#define PIN_GPIO_OUT 1
 #endif
