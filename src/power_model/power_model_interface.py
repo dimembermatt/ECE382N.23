@@ -32,6 +32,7 @@ class PowerModelInterface:
         if supply_name in self._power_supplies:
             return False
         self._power_supplies[supply_name] = supply
+        self._power_supplies[supply_name]["available_power"] = []
         return True
 
     def generate_power_usage(self) -> dict:
@@ -117,6 +118,9 @@ class PowerModelInterface:
             return (True, self._power_usage[step])
 
     def print_power_usage(self) -> None:
+        for supply_id, supply in self._power_supplies.items():
+            print(supply_id, supply["consumers"])
+
         for event in self._power_usage:
             print(f"TIME: {event['timestamp']}")
             print(event["duration"])
@@ -129,6 +133,7 @@ class PowerModelInterface:
 
                 print(f"\tSum: {sum}")
                 print(f"\tAvailable power: {0}")
+
             print()
 
     def visualize_power_usage(self) -> None:

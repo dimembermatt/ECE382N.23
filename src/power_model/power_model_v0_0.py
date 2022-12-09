@@ -69,9 +69,13 @@ class PowerModel_V0_0(PowerModelInterface):
                 self._devices[device_id]["supply"] = self._power_supplies[
                     self._devices[device_id]["supply_id"]
                 ]
+                if "consumers" not in self._devices[device_id]["supply"]:
+                    self._devices[device_id]["supply"]["consumers"] = [device_id]
+                else:
+                    self._devices[device_id]["supply"]["consumers"].append(device_id)
                 del self._devices[device_id]["supply_id"]
 
-        for event in event_timeline:
+        for event_idx, event in enumerate(event_timeline):
             power_event = {
                 "timestamp": event["timestamp"],
                 "duration": event["duration"],
@@ -94,7 +98,6 @@ class PowerModel_V0_0(PowerModelInterface):
 
                 power_event["devices"][device_id] = []
 
-                y = 0
                 # Calculate power per consumer
                 for consumer in active_consumers:
                     if "core" in consumer:
@@ -134,7 +137,7 @@ if __name__ == "__main__":
     except ImportError:
         pass  # no need to fail because of missing dev dependency
 
-    model = PowerModel_V0_1()
+    model = PowerModel_V0_0()
 
     device_0 = {
         "device_name": "device_0",
