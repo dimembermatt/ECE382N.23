@@ -22,22 +22,17 @@
                         0,
                         {
                             "results": [
-                                [
-                                    1,
-                                    6,
-                                    0,
-                                    0,
-                                    10
-                                ]
+                                1
                             ]
                         }
                     ]
                 }
             },
+            "duration": 10,
             "active_peripherals": {
                 "example_device": [
-                    "cpu_0",
-                    "adc_0"
+                    "adc_0",
+                    "cpu_0"
                 ]
             }
         },
@@ -50,13 +45,7 @@
                         4,
                         {
                             "dependencies": [
-                                [
-                                    1,
-                                    6,
-                                    0,
-                                    0,
-                                    10
-                                ]
+                                1
                             ]
                         }
                     ]
@@ -70,18 +59,13 @@
                         0,
                         {
                             "results": [
-                                [
-                                    1,
-                                    5,
-                                    0,
-                                    0,
-                                    5
-                                ]
+                                1
                             ]
                         }
                     ]
                 }
             },
+            "duration": 4,
             "active_peripherals": {
                 "example_device": [
                     "cpu_0"
@@ -97,13 +81,7 @@
                         1,
                         {
                             "dependencies": [
-                                [
-                                    1,
-                                    5,
-                                    0,
-                                    0,
-                                    5
-                                ]
+                                1
                             ]
                         }
                     ]
@@ -116,13 +94,12 @@
                         "control_led",
                         0,
                         {
-                            "results": [
-                                "LED ON"
-                            ]
+                            "results": []
                         }
                     ]
                 }
             },
+            "duration": 1,
             "active_peripherals": {
                 "example_device": [
                     "cpu_0",
@@ -134,7 +111,9 @@
             "timestep": 15,
             "started_tasks": {},
             "running_tasks": {},
-            "ending_tasks": {}
+            "ending_tasks": {},
+            "duration": null,
+            "active_peripherals": {}
         }
     }
 }

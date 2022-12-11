@@ -45,6 +45,7 @@ class ApplicationTimingModel_V0_0:
 
         step = {
             "timestep": outputs["next_timestep"],
+            "duration": None,
             "started_tasks": {},
             "running_tasks": {},
             "ending_tasks": {},
@@ -66,6 +67,7 @@ class ApplicationTimingModel_V0_0:
             if min_duration is None or min_duration > task_duration:
                 min_duration = task_duration
 
+        step["duration"] = min_duration
         outputs["steps"][outputs["next_timestep"]] = step
 
         if min_duration is None:

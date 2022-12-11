@@ -80,23 +80,22 @@ class ApplicationModelInterface:
         if num_steps is None:
             while True:
                 can_run = self.timing_model.process_step(self.outputs, self.inputs)
-                if can_run is False:
-                    break
                 self.execution_model.process_step(self.outputs, self.inputs)
                 self.hardware_model.process_step(self.outputs, self.inputs)
-
+                if can_run is False:
+                    break
         else:
             for _ in range(num_steps):
                 can_run = self.timing_model.process_step(self.outputs, self.inputs)
-                if can_run is False:
-                    break
                 self.execution_model.process_step(self.outputs, self.inputs)
                 self.hardware_model.process_step(self.outputs, self.inputs)
-
+                if can_run is False:
+                    break
 
         plt.figure(0)
         fig = plt.gcf()
-        fig.set_size_inches(15, 9, forward=True)
+        fig.set_size_inches(10, 5, forward=True)
+        fig.suptitle("Application Event Timeline")
         plt.subplot(111)
         ax = plt.gca()
 
@@ -133,7 +132,6 @@ class ApplicationModelInterface:
                         color="black",
                     )
 
-        ax.set_title("Application Event Timeline")
         ax.set_xlabel("Timestep (cycles)")
 
         return self.outputs

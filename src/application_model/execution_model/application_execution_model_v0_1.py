@@ -19,6 +19,9 @@ class ApplicationExecutionModel_V0_1:
         pass
 
     def process_step(self, outputs, inputs):
+        if outputs["next_timestep"] == "End of schedule.":
+            return
+
         # Get the current step
         step = [
             list(outputs["steps"].keys())[-1],
