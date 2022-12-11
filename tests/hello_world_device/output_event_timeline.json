@@ -1,0 +1,140 @@
+{
+    "next_timestep": "End of schedule.",
+    "steps": {
+        "0": {
+            "timestep": 0,
+            "started_tasks": {
+                "example_device": {
+                    "cpu_0": [
+                        "sample_adc",
+                        10,
+                        {
+                            "dependencies": []
+                        }
+                    ]
+                }
+            },
+            "running_tasks": {},
+            "ending_tasks": {
+                "example_device": {
+                    "cpu_0": [
+                        "sample_adc",
+                        0,
+                        {
+                            "results": [
+                                [
+                                    1,
+                                    6,
+                                    0,
+                                    0,
+                                    10
+                                ]
+                            ]
+                        }
+                    ]
+                }
+            },
+            "active_peripherals": {
+                "example_device": [
+                    "cpu_0",
+                    "adc_0"
+                ]
+            }
+        },
+        "10": {
+            "timestep": 10,
+            "started_tasks": {
+                "example_device": {
+                    "cpu_0": [
+                        "filter_adc",
+                        4,
+                        {
+                            "dependencies": [
+                                [
+                                    1,
+                                    6,
+                                    0,
+                                    0,
+                                    10
+                                ]
+                            ]
+                        }
+                    ]
+                }
+            },
+            "running_tasks": {},
+            "ending_tasks": {
+                "example_device": {
+                    "cpu_0": [
+                        "filter_adc",
+                        0,
+                        {
+                            "results": [
+                                [
+                                    1,
+                                    5,
+                                    0,
+                                    0,
+                                    5
+                                ]
+                            ]
+                        }
+                    ]
+                }
+            },
+            "active_peripherals": {
+                "example_device": [
+                    "cpu_0"
+                ]
+            }
+        },
+        "14": {
+            "timestep": 14,
+            "started_tasks": {
+                "example_device": {
+                    "cpu_0": [
+                        "control_led",
+                        1,
+                        {
+                            "dependencies": [
+                                [
+                                    1,
+                                    5,
+                                    0,
+                                    0,
+                                    5
+                                ]
+                            ]
+                        }
+                    ]
+                }
+            },
+            "running_tasks": {},
+            "ending_tasks": {
+                "example_device": {
+                    "cpu_0": [
+                        "control_led",
+                        0,
+                        {
+                            "results": [
+                                "LED ON"
+                            ]
+                        }
+                    ]
+                }
+            },
+            "active_peripherals": {
+                "example_device": [
+                    "cpu_0",
+                    "led_0"
+                ]
+            }
+        },
+        "15": {
+            "timestep": 15,
+            "started_tasks": {},
+            "running_tasks": {},
+            "ending_tasks": {}
+        }
+    }
+}

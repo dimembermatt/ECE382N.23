@@ -1,0 +1,99 @@
+{
+    "example_device": {
+        "device_name": "example_device",
+        "hardware": {
+            "cpu_0": {
+                "level_0": {
+                    "idle_power": 1,
+                    "active_power": 2
+                },
+                "level_1": {
+                    "voltage": 3.3,
+                    "current": [0.3, 0.6],
+                    "frequency": 1
+                },
+                "level_2": {
+                    "voltage_dist": ["trunc_norm", 3.3, 0.1],
+                    "current_dist": [["trunc_norm", 0.3, 0.1], ["trunc_norm", 0.6, 0.2]],
+                    "frequency_dist": ["trunc_norm", 1, 0.0]
+                },
+                "level_3": {
+                    "power_func": "Reference to power function"
+                }
+            },
+            "adc_0": {
+                "level_0": {
+                    "idle_power": 0.5,
+                    "active_power": 1
+                },
+                "level_1": {
+                    "voltage": 3.3,
+                    "current": [0.15, 0.3],
+                    "frequency": 1
+                },
+                "level_2": {
+                    "voltage_dist": ["trunc_norm", 3.3, 0.1],
+                    "current_dist": [["trunc_norm", 0.15, 0.1], ["trunc_norm", 0.3, 0.2]],
+                    "frequency_dist": ["trunc_norm", 1, 0.0]
+                },
+                "level_3": {
+                    "power_func": "Reference to power function"
+                }
+            },
+            "led_0": {
+                "level_0": {
+                    "idle_power": 0.1,
+                    "active_power": 1
+                }
+            }
+        },
+        "tasks": {
+            "sample_adc": {
+                "timing": {
+                    "duration": 10,
+                    "duration_func": ["example_device_functions", "sample_adc_dur"],
+                    "instruction_duration_func": [],
+                    "instruction_lookup_func": []
+                },
+                "execution": {
+                    "dependencies": [],
+                    "outputs": {"adc_measurement": ["example_device"]},
+                    "execution_func": ["example_device_functions", "sample_adc"]
+                },
+                "hardware": ["cpu_0", "adc_0"]
+            },
+            "filter_adc": {
+                "timing": {
+                    "duration": 4,
+                    "duration_func": ["example_device_functions", "filter_adc_dur"],
+                    "instruction_duration_func": [],
+                    "instruction_lookup_func": []
+                },
+                "execution": {
+                    "dependencies": ["adc_measurement"],
+                    "outputs": {"filtered_adc_measurement": ["example_device"]},
+                    "execution_func": ["example_device_functions", "filter_adc"]
+                },
+                "hardware": ["cpu_0"]
+            },
+            "control_led": {
+                "timing": {
+                    "duration": 1,
+                    "duration_func": ["example_device_functions", "control_led_dur"],
+                    "instruction_duration_func": [],
+                    "instruction_lookup_func": []
+                },
+                "execution": {
+                    "dependencies": ["filtered_adc_measurement"],
+                    "outputs": {},
+                    "execution_func": ["example_device_functions", "control_led"]
+                },
+                "hardware": ["cpu_0", "led_0"]
+            }
+        },
+        "schedule": {
+            "cpu_0": ["sample_adc", "filter_adc", "control_led"]
+        },
+        "cache": {}
+    }
+}
