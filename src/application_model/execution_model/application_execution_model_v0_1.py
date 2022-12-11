@@ -29,15 +29,18 @@ class ApplicationExecutionModel_V0_1:
         for device_name, device in step[1]["started_tasks"].items():
             for cpu_name, (task_name, task_duration) in device.items():
                 # Remove dependencies from device cache (so they cannot be reused).
-                dependencies = inputs[device_name]["tasks"][task_name]["execution"][
+                dependency_keys = inputs[device_name]["tasks"][task_name]["execution"][
                     "dependencies"
                 ]
-
-                for dependency in dependencies:
-                    del inputs[device_name]["cache"][dependency]
+                dependecy_values = []
+                for dependency_key in dependency_keys:
+                    dependecy_values.append(
+                        inputs[device_name]["cache"][dependency_key]
+                    )
+                    del inputs[device_name]["cache"][dependency_key]
 
                 # Add dependencies to the tasks in the outputs.
-                device[cpu_name].append({"dependencies": dependencies})
+                device[cpu_name].append({"dependencies": dependecy_values})
 
         # Move started tasks into running tasks and deduct N cycles to prepare
         # for next timestep.
@@ -57,20 +60,22 @@ class ApplicationExecutionModel_V0_1:
                     step[1]["ending_tasks"][device_name][cpu_name] = (
                         task_name,
                         task_duration - timestep,
-                        dependencies
+                        dependencies,
                     )
                     # NOTE: cannot del from running_tasks here in loop.
                 else:
                     step[1]["running_tasks"][device_name][cpu_name] = (
                         task_name,
                         task_duration - timestep,
-                        dependencies
+                        dependencies,
                     )
 
         # For tasks with no time left, generate outputs and remove from list.
         for device_name, device in step[1]["ending_tasks"].items():
             for cpu_name, (task_name, task_duration, data) in device.items():
                 del step[1]["running_tasks"][device_name][cpu_name]
+                if len(step[1]["running_tasks"][device_name]) == 0:
+                    del step[1]["running_tasks"][device_name]
 
                 task_outputs = inputs[device_name]["tasks"][task_name]["execution"][
                     "outputs"
@@ -81,13 +86,17 @@ class ApplicationExecutionModel_V0_1:
                 # provided function that may or may not take in input values.
 
                 # Get user provided function.
-                fp_str, func_str = inputs[device_name]["tasks"][task_name]["execution"]["execution_func"]
+                fp_str, func_str = inputs[device_name]["tasks"][task_name]["execution"][
+                    "execution_func"
+                ]
                 mod = __import__(f"{fp_str}")
                 func = getattr(mod, func_str)
                 data["results"] = func(len(data["dependencies"]), data["dependencies"])
                 del data["dependencies"]
 
-                for (output_id, output_targets), result in zip(task_outputs.items(), data["results"]):
+                for (output_id, output_targets), result in zip(
+                    task_outputs.items(), data["results"]
+                ):
                     for output_target in output_targets:
                         inputs[output_target]["cache"][output_id] = result
 

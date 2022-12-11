@@ -3,7 +3,7 @@
 @author     Matthew Yu (matthewjkyu@gmail.com)
 @brief      Simulates a given set of devices.
 @version    0.0.0
-@date       2022-12-09
+@date       2022-12-11
 """
 
 import json
@@ -40,11 +40,17 @@ if __name__ == "__main__":
         path,
         inputs,
         "ApplicationHardwareModel_V0_0",
-        "ApplicationExecutionModel_V0_0",
-        "ApplicationTimingModel_V0_0",
+        "ApplicationExecutionModel_V0_1",
+        "ApplicationTimingModel_V0_2",
     )
     power_model = None
     network_model = None
 
     app_model.generate_output()
-    app_model.print_outputs()
+
+    app_model.pprint_outputs()
+
+    # Call before visualize because matplotlib plot clears the figure.
+    app_model.save_outputs()
+
+    app_model.visualize_event_timeline()

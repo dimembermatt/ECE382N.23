@@ -29,6 +29,7 @@ class ApplicationTimingModel_V0_0:
                     dependencies = inputs[device_name]["tasks"][task_name]["execution"][
                         "dependencies"
                     ]
+
                     deps_fulfilled = True
                     for dependency in dependencies:
                         if dependency not in inputs[device_name]["cache"]:
@@ -41,7 +42,6 @@ class ApplicationTimingModel_V0_0:
                         executable_tasks.append([device_name, cpu_name, task_name, 1])
                     else:
                         cpu.insert(0, task_name)
-
 
         step = {
             "timestep": outputs["next_timestep"],
