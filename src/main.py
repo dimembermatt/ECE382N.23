@@ -31,24 +31,27 @@ if __name__ == "__main__":
         pass  # no need to fail because of missing dev dependency
 
     path = "../tests/hello_world_device/"
-    specification_file = "example_device.json"
+    device_specification_file = "example_device.json"
+    supply_specification_file = "example_power_supply.json"
 
     # Pass in our inputs
-    inputs = load_inputs(path, specification_file)
+    device_inputs = load_inputs(path, device_specification_file)
+    supply_inputs = load_inputs(path, supply_specification_file)
 
     # Select the model components
     app_model = ApplicationModelInterface(
         path,
-        inputs,
+        device_inputs,
         "ApplicationHardwareModel_V0_0",
-        "ApplicationExecutionModel_V0_0",
+        "ApplicationExecutionModel_V0_1",
         "ApplicationTimingModel_V0_2",
     )
     app_outputs = app_model.generate_output()
 
     power_model = PowerModelInterface(
         path,
-        inputs,
+        device_inputs,
+        supply_inputs,
         app_outputs,
         "PowerConsumptionModel_V0_0",
         "PowerSupplyModel_V0_0",
@@ -57,11 +60,11 @@ if __name__ == "__main__":
 
     network_model = None
 
-    app_model.pprint_outputs()
-    power_model.pprint_outputs()
+    # app_model.pprint_outputs()
+    # power_model.pprint_outputs()
     # Call before visualize because matplotlib plot clears the figure.
     app_model.save_outputs()
     power_model.save_outputs()
 
-    app_model.visualize_event_timeline()
+    # app_model.visualize_event_timeline()
     power_model.visualize_power_usage()

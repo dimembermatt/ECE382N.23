@@ -1,0 +1,12 @@
+{
+    "example_power_supply": {
+        "supply_name": "example_power_supply",
+        "supply_power": 5.0,
+        "supply_power_distribution": ["trunc_norm", 5.0, 0.1],
+        "supply_voltage": 5.0,
+        "supply_current": 1.0,
+        "supply_voltage_distribution": ["trunc_norm", 5.0, 0.1],
+        "supply_current_distribution": ["trunc_norm", 1.0, 0.1],
+        "power_func": "Reference to power function"
+    }
+}

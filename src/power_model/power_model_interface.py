@@ -38,13 +38,20 @@ def get_power_supply_models(supply_model_str):
 
 class PowerModelInterface:
     def __init__(
-        self, path, inputs, app_outputs, consumption_model_str, supply_model_str
+        self,
+        path,
+        device_inputs,
+        supply_inputs,
+        app_outputs,
+        consumption_model_str,
+        supply_model_str,
     ):
         sys.path.append(path)
         self.path = path
         self.consumption_model = get_power_consumption_models(consumption_model_str)
         self.supply_model = get_power_supply_models(supply_model_str)
-        self.inputs = inputs
+        self.inputs = device_inputs
+        self.supply_inputs = supply_inputs
         self.app_outputs = app_outputs
         self.outputs = {"consumers": None, "producers": None}
 
@@ -54,7 +61,9 @@ class PowerModelInterface:
 
     def generate_output(self):
         self.consumption_model.process(self.outputs, self.inputs, self.app_outputs)
-        self.supply_model.process(self.outputs, self.inputs, self.app_outputs)
+        self.supply_model.process(
+            self.outputs, self.inputs, self.supply_inputs, self.app_outputs
+        )
 
         plt.figure(1)
         fig = plt.gcf()
@@ -67,7 +76,9 @@ class PowerModelInterface:
             axs[device_name] = fig.add_subplot(num_devices, 1, idx + 1)
             axs[device_name].set_xlabel("Timestep (cycles)")
             axs[device_name].set_ylabel("Power Usage (W)")
-            axs[device_name].set_title(f"Device {device_name} Power Consumption Over Time")
+            axs[device_name].set_title(
+                f"Device {device_name} Power Consumption Over Time"
+            )
 
         # Plot consumer broken bar graphs
         for step_idx, step in self.outputs["consumers"].items():
@@ -84,7 +95,7 @@ class PowerModelInterface:
                         bottom=y,
                         width=duration,
                         label=f"{consumer_name}",
-                        color=[*c]
+                        color=[*c],
                     )
                     ax.text(
                         x=current_time + duration / 2,
@@ -92,12 +103,24 @@ class PowerModelInterface:
                         s=f"{consumer_name}",
                         ha="center",
                         va="center",
-                        color="black"
+                        color="black",
                     )
                     y += consumer_power_consumption
 
+        print(json.dumps(self.outputs, indent=4))
         # Plot producers line
-        # TODO: create supply model output then plot
+        for step_idx, step in self.outputs["producers"].items():
+            for supply_name, consumers in step:
+                for device_name, available_power in consumers:
+                    ax = axs[device_name]
+                    c = [x / 255 for x in ColorHash(device_name).rgb]
+                    current_time = self.app_outputs["steps"][step_idx]["timestep"]
+                    duration = self.app_outputs["steps"][step_idx]["duration"]
+                    ax.plot(
+                        [current_time, current_time + duration],
+                        [available_power] * 2,
+                        c=c
+                    )
 
         return self.outputs
 

@@ -13,18 +13,24 @@ import sys
 import matplotlib.pyplot as plt
 from colorhash import ColorHash
 
-from application_model.execution_model.application_execution_model_v0_0 import \
-    ApplicationExecutionModel_V0_0
-from application_model.execution_model.application_execution_model_v0_1 import \
-    ApplicationExecutionModel_V0_1
-from application_model.hardware_model.application_hardware_model_v0_0 import \
-    ApplicationHardwareModel_V0_0
-from application_model.timing_model.application_timing_model_v0_0 import \
-    ApplicationTimingModel_V0_0
-from application_model.timing_model.application_timing_model_v0_1 import \
-    ApplicationTimingModel_V0_1
-from application_model.timing_model.application_timing_model_v0_2 import \
-    ApplicationTimingModel_V0_2
+from application_model.execution_model.application_execution_model_v0_0 import (
+    ApplicationExecutionModel_V0_0,
+)
+from application_model.execution_model.application_execution_model_v0_1 import (
+    ApplicationExecutionModel_V0_1,
+)
+from application_model.hardware_model.application_hardware_model_v0_0 import (
+    ApplicationHardwareModel_V0_0,
+)
+from application_model.timing_model.application_timing_model_v0_0 import (
+    ApplicationTimingModel_V0_0,
+)
+from application_model.timing_model.application_timing_model_v0_1 import (
+    ApplicationTimingModel_V0_1,
+)
+from application_model.timing_model.application_timing_model_v0_2 import (
+    ApplicationTimingModel_V0_2,
+)
 
 
 def get_app_hardware_models(hardware_model_str):
