@@ -1,16 +1,15 @@
 """_summary_
-@file       power_consumption_model_v0_0.py
+@file       power_consumption_model_v0_1.py
 @author     Matthew Yu (matthewjkyu@gmail.com)
 @brief      Models power consumption of devices.
-@version    0.0.0
+@version    0.0.1
 @date       2022-12-11
 """
 
 
-class PowerConsumptionModel_V0_0:
+class PowerConsumptionModel_V0_1:
     """_summary_
-    Hardware power consumption is denoted between an idle and active
-    consumption.
+    Hardware power consumption is determined by a voltage and current parameter.
     """
 
     def __init__(self):
@@ -50,14 +49,16 @@ class PowerConsumptionModel_V0_0:
                 active_consumers = [
                     (
                         consumer_name,
-                        inputs[device_name]["hardware"][consumer_name]["active_power"],
+                        inputs[device_name]["hardware"][consumer_name]["voltage"]
+                        * inputs[device_name]["hardware"][consumer_name]["current"][1],
                     )
                     for consumer_name in consumers["active_hardware"]
                 ]
                 idle_consumers = [
                     (
                         consumer_name,
-                        inputs[device_name]["hardware"][consumer_name]["idle_power"],
+                        inputs[device_name]["hardware"][consumer_name]["voltage"]
+                        * inputs[device_name]["hardware"][consumer_name]["current"][0],
                     )
                     for consumer_name in consumers["idle_hardware"]
                 ]
@@ -68,4 +69,4 @@ class PowerConsumptionModel_V0_0:
             outputs["consumers"][step_idx] = devices
 
     def get_model_name(self):
-        return "PowerConsumptionModel_V0_0"
+        return "PowerConsumptionModel_V0_1"

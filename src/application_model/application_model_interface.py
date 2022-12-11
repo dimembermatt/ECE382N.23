@@ -3,7 +3,7 @@
 @author     Matthew Yu (matthewjkyu@gmail.com)
 @brief      Provides the abstraction interface for modeling device applications.
 @version    0.0.0
-@date       2022-12-09
+@date       2022-12-11
 """
 
 
@@ -13,29 +13,27 @@ import sys
 import matplotlib.pyplot as plt
 from colorhash import ColorHash
 
-from application_model.execution_model.application_execution_model_v0_0 import (
-    ApplicationExecutionModel_V0_0,
-)
-from application_model.execution_model.application_execution_model_v0_1 import (
-    ApplicationExecutionModel_V0_1,
-)
-from application_model.hardware_model.application_hardware_model_v0_0 import (
-    ApplicationHardwareModel_V0_0,
-)
-from application_model.timing_model.application_timing_model_v0_0 import (
-    ApplicationTimingModel_V0_0,
-)
-from application_model.timing_model.application_timing_model_v0_1 import (
-    ApplicationTimingModel_V0_1,
-)
-from application_model.timing_model.application_timing_model_v0_2 import (
-    ApplicationTimingModel_V0_2,
-)
+from application_model.execution_model.application_execution_model_v0_0 import \
+    ApplicationExecutionModel_V0_0
+from application_model.execution_model.application_execution_model_v0_1 import \
+    ApplicationExecutionModel_V0_1
+from application_model.hardware_model.application_hardware_model_v0_0 import \
+    ApplicationHardwareModel_V0_0
+from application_model.timing_model.application_timing_model_v0_0 import \
+    ApplicationTimingModel_V0_0
+from application_model.timing_model.application_timing_model_v0_1 import \
+    ApplicationTimingModel_V0_1
+from application_model.timing_model.application_timing_model_v0_2 import \
+    ApplicationTimingModel_V0_2
+from application_model.timing_model.application_timing_model_v0_3 import \
+    ApplicationTimingModel_V0_3
 
 
 def get_app_hardware_models(hardware_model_str):
     match hardware_model_str:
         case "ApplicationHardwareModel_V0_0":
+            # Hardware usage is either active or idle for the duration of the
+            # task.
             return ApplicationHardwareModel_V0_0()
         case _:
             return None
@@ -44,8 +42,12 @@ def get_app_hardware_models(hardware_model_str):
 def get_app_execution_models(execution_model_str):
     match execution_model_str:
         case "ApplicationExecutionModel_V0_0":
+            # Execution consumes arbitrary dependencies and generate
+            # arbitrary outputs without considering actual values.
             return ApplicationExecutionModel_V0_0()
         case "ApplicationExecutionModel_V0_1":
+            # Execution consumes and generates real values which are
+            # processed by a user defined function.
             return ApplicationExecutionModel_V0_1()
         case _:
             return None
@@ -54,12 +56,27 @@ def get_app_execution_models(execution_model_str):
 def get_timing_models(timing_model_str):
     match timing_model_str:
         case "ApplicationTimingModel_V0_0":
+            # Timing is logical and each task is considered a single cycle.
             return ApplicationTimingModel_V0_0()
         case "ApplicationTimingModel_V0_1":
+            # Timing is provided by a task duration in cycles.
             return ApplicationTimingModel_V0_1()
         case "ApplicationTimingModel_V0_2":
+            # Timing is dictated by a task duration in cycles and processor
+            # in hertz.
             return ApplicationTimingModel_V0_2()
         case "ApplicationTimingModel_V0_3":
+            # Task timing is provided a function where the duration in cycles is
+            # dependent on the inputs. Afterwards the real duration is generated
+            # using the processor frequency.
+            return ApplicationTimingModel_V0_3()
+        case "ApplicationTimingModel_V0_4":
+            # TODO: ApplicationTimingModel_V0_4
+            # Task timing is provided a function where the duration in cycles is
+            # dependent on the inputs. Afterwards the real duration is generated
+            # using the processor frequency. Likewise, the user specifies a
+            # function that transforms the processor base frequency based on the
+            # energy consumption of the device and the remaining supply power.
             return None
         case _:
             return None

@@ -44,7 +44,7 @@ if __name__ == "__main__":
         device_inputs,
         "ApplicationHardwareModel_V0_0",
         "ApplicationExecutionModel_V0_1",
-        "ApplicationTimingModel_V0_2",
+        "ApplicationTimingModel_V0_3",
     )
     app_outputs = app_model.generate_output()
 
@@ -53,18 +53,19 @@ if __name__ == "__main__":
         device_inputs,
         supply_inputs,
         app_outputs,
-        "PowerConsumptionModel_V0_0",
+        "PowerConsumptionModel_V0_1",
         "PowerSupplyModel_V0_0",
     )
     power_outputs = power_model.generate_output()
 
     network_model = None
 
-    # app_model.pprint_outputs()
-    # power_model.pprint_outputs()
+    app_model.pprint_outputs()
+    power_model.pprint_outputs()
+
     # Call before visualize because matplotlib plot clears the figure.
     app_model.save_outputs()
     power_model.save_outputs()
 
-    # app_model.visualize_event_timeline()
+    app_model.visualize_event_timeline()
     power_model.visualize_power_usage()

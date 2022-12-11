@@ -3,11 +3,10 @@
 @author     Matthew Yu (matthewjkyu@gmail.com)
 @brief      Models task execution actions.
 @version    0.0.1
-@date       2022-12-10
+@date       2022-12-11
 """
 
 import copy
-import sys
 
 
 class ApplicationExecutionModel_V0_1:

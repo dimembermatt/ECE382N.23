@@ -7,7 +7,7 @@
                 "example_device": {
                     "cpu_0": [
                         "sample_adc",
-                        10,
+                        5.0,
                         {
                             "dependencies": []
                         }
@@ -19,7 +19,7 @@
                 "example_device": {
                     "cpu_0": [
                         "sample_adc",
-                        0,
+                        0.0,
                         {
                             "results": [
                                 [
@@ -34,21 +34,21 @@
                     ]
                 }
             },
-            "duration": 10,
+            "duration": 5.0,
             "active_peripherals": {
                 "example_device": [
-                    "adc_0",
-                    "cpu_0"
+                    "cpu_0",
+                    "adc_0"
                 ]
             }
         },
-        "10": {
-            "timestep": 10,
+        "5.0": {
+            "timestep": 5.0,
             "started_tasks": {
                 "example_device": {
                     "cpu_0": [
                         "filter_adc",
-                        4,
+                        2.0,
                         {
                             "dependencies": [
                                 [
@@ -68,7 +68,7 @@
                 "example_device": {
                     "cpu_0": [
                         "filter_adc",
-                        0,
+                        0.0,
                         {
                             "results": [
                                 [
@@ -83,20 +83,20 @@
                     ]
                 }
             },
-            "duration": 4,
+            "duration": 2.0,
             "active_peripherals": {
                 "example_device": [
                     "cpu_0"
                 ]
             }
         },
-        "14": {
-            "timestep": 14,
+        "7.0": {
+            "timestep": 7.0,
             "started_tasks": {
                 "example_device": {
                     "cpu_0": [
                         "control_led",
-                        1,
+                        0.5,
                         {
                             "dependencies": [
                                 [
@@ -116,7 +116,7 @@
                 "example_device": {
                     "cpu_0": [
                         "control_led",
-                        0,
+                        0.0,
                         {
                             "results": [
                                 "LED ON"
@@ -125,16 +125,16 @@
                     ]
                 }
             },
-            "duration": 1,
+            "duration": 0.5,
             "active_peripherals": {
                 "example_device": [
-                    "led_0",
-                    "cpu_0"
+                    "cpu_0",
+                    "led_0"
                 ]
             }
         },
-        "15": {
-            "timestep": 15,
+        "7.5": {
+            "timestep": 7.5,
             "started_tasks": {},
             "running_tasks": {},
             "ending_tasks": {},

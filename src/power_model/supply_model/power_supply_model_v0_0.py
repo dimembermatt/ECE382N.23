@@ -3,11 +3,8 @@
 @author     Matthew Yu (matthewjkyu@gmail.com)
 @brief      Models power supply for devices.
 @version    0.0.0
-@date       2022-12-10
+@date       2022-12-11
 """
-
-import json
-import sys
 
 
 class PowerSupplyModel_V0_0:
@@ -27,7 +24,7 @@ class PowerSupplyModel_V0_0:
                     # NOTE: In this layer, we consult the supply power parameter
                     # specified by the designer.
                     supply_list[supply_name] = {
-                        "supply_power": supply_inputs[supply_name]["supply_power"],
+                        "supply_power": supply_inputs[supply_name]["power"],
                         "consumers": [device_name],
                     }
                 else:
@@ -61,7 +58,7 @@ class PowerSupplyModel_V0_0:
                         supply_consumer.append((device_name, supply_power))
                     supplies.append([supply_name, supply_consumer])
 
-                outputs["producers"][step_idx] = supplies
+            outputs["producers"][step_idx] = supplies
 
     def get_model_name(self):
         return "PowerSupplyModel_V0_0"

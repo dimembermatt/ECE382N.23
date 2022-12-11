@@ -4,7 +4,7 @@
 @brief      Provides the abstraction interface for modeling device power
             consumption.
 @version    0.0.0
-@date       2022-12-09
+@date       2022-12-11
 """
 
 
@@ -14,16 +14,35 @@ import sys
 import matplotlib.pyplot as plt
 from colorhash import ColorHash
 
-from power_model.consumption_model.power_consumption_model_v0_0 import \
-    PowerConsumptionModel_V0_0
-from power_model.supply_model.power_supply_model_v0_0 import \
-    PowerSupplyModel_V0_0
+from power_model.consumption_model.power_consumption_model_v0_0 import (
+    PowerConsumptionModel_V0_0,
+)
+from power_model.consumption_model.power_consumption_model_v0_1 import (
+    PowerConsumptionModel_V0_1,
+)
+from power_model.supply_model.power_supply_model_v0_0 import PowerSupplyModel_V0_0
 
 
 def get_power_consumption_models(consumption_model_str):
     match consumption_model_str:
         case "PowerConsumptionModel_V0_0":
+            # Power consumption is dictated by idle and active power consumption.
             return PowerConsumptionModel_V0_0()
+        case "PowerConsumptionModel_V0_1":
+            # Power consumption is dictated by device voltage and idle and
+            # current consumption.
+            return PowerConsumptionModel_V0_1()
+        case "PowerConsumptionModel_V0_2":
+            # TODO: PowerConsumptionModel_V0_2
+            # Power consumption is dictated by a voltage and current
+            # distribution.
+            return None
+        case "PowerConsumptionModel_V0_3":
+            # TODO: PowerConsumptionModel_V0_3
+            # Power consumption is dicted by a power function whose inputs are
+            # the processor frequency, processor task function and dependencies,
+            # as well as hardware used.
+            return None
         case _:
             return None
 
@@ -31,7 +50,28 @@ def get_power_consumption_models(consumption_model_str):
 def get_power_supply_models(supply_model_str):
     match supply_model_str:
         case "PowerSupplyModel_V0_0":
+            # Power available is dictated by a power generation parameter.
             return PowerSupplyModel_V0_0()
+        case "PowerSupplyModel_V0_1":
+            # TODO: PowerSupplyModel_V0_1
+            # Power available is dictated by a power generation distribution
+            # parameter.
+            return None
+        case "PowerSupplyModel_V0_2":
+            # TODO: PowerSupplyModel_V0_2
+            # Power available is dictated by voltage, current, and conversion
+            # efficiency.
+            return None
+        case "PowerSupplyModel_V0_3":
+            # TODO: PowerSupplyModel_V0_3
+            # Power available is dictated by voltage, current, and conversion
+            # efficiency distributions.
+            return None
+        case "PowerSupplyModel_V0_4":
+            # TODO: PowerSupplyModel_V0_4
+            # Power available is dictated by a user defined power function whose
+            # inputs are current power load.
+            return None
         case _:
             return None
 
@@ -119,7 +159,7 @@ class PowerModelInterface:
                     ax.plot(
                         [current_time, current_time + duration],
                         [available_power] * 2,
-                        c=c
+                        c=c,
                     )
 
         return self.outputs

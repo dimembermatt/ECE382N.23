@@ -3,7 +3,7 @@
 @author     Matthew Yu (matthewjkyu@gmail.com)
 @brief      Models timing interactions between tasks.
 @version    0.0.1
-@date       2022-12-10
+@date       2022-12-11
 """
 
 
@@ -39,6 +39,9 @@ class ApplicationTimingModel_V0_1:
                             deps_fulfilled = False
 
                     if deps_fulfilled:
+                        # NOTE: In this abstraction layer, we assume the
+                        # duration of the task is the specified duration in
+                        # cycles where one cycle is clocked per second.
                         executable_tasks.append(
                             [
                                 device_name,
@@ -52,8 +55,9 @@ class ApplicationTimingModel_V0_1:
                     else:
                         cpu.insert(0, task_name)
 
-        # NOTE: Since we assume here that each task executing has a task
-        # duration, choose the next timestep based on the closest duration to 0.
+        # NOTE: Starting at this abstraction layer, since we assume here that
+        # each task executing has a task duration, choose the next timestep
+        # based on the closest duration to 0.
         step = {
             "timestep": outputs["next_timestep"],
             "started_tasks": {},
