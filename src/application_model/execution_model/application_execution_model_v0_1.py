@@ -1,18 +1,18 @@
 """_summary_
-@file       application_execution_model_v0_0.py
+@file       application_execution_model_v0_1.py
 @author     Matthew Yu (matthewjkyu@gmail.com)
 @brief      Models task execution actions.
-@version    0.0.0
+@version    0.0.1
 @date       2022-12-10
 """
 
 import copy
+import sys
 
 
-class ApplicationExecutionModel_V0_0:
+class ApplicationExecutionModel_V0_1:
     """_summary_
-    Tasks consume dependencies and generate outputs without considering their
-    actual values.
+    Tasks generate output values dependent on their input values.
     """
 
     def __init__(self):
@@ -69,7 +69,7 @@ class ApplicationExecutionModel_V0_0:
 
         # For tasks with no time left, generate outputs and remove from list.
         for device_name, device in step[1]["ending_tasks"].items():
-            for cpu_name, (task_name, task_duration, dependencies) in device.items():
+            for cpu_name, (task_name, task_duration, data) in device.items():
                 del step[1]["running_tasks"][device_name][cpu_name]
 
                 task_outputs = inputs[device_name]["tasks"][task_name]["execution"][
@@ -77,10 +77,19 @@ class ApplicationExecutionModel_V0_0:
                 ]
 
                 # NOTE: Add outputs to the cache of associated devices. In this
-                # implementation, the input and output values don't matter.
-                for output_id, output_targets in task_outputs.items():
+                # implementation, the output values are generated from a user
+                # provided function that may or may not take in input values.
+
+                # Get user provided function.
+                fp_str, func_str = inputs[device_name]["tasks"][task_name]["execution"]["execution_func"]
+                mod = __import__(f"{fp_str}")
+                func = getattr(mod, func_str)
+                data["results"] = func(len(data["dependencies"]), data["dependencies"])
+                del data["dependencies"]
+
+                for (output_id, output_targets), result in zip(task_outputs.items(), data["results"]):
                     for output_target in output_targets:
-                        inputs[output_target]["cache"][output_id] = 1
+                        inputs[output_target]["cache"][output_id] = result
 
     def get_model_name(self):
-        return "ApplicationExecutionModel_V0_0"
+        return "ApplicationExecutionModel_V0_1"

@@ -1,7 +1,7 @@
 """_summary_
-@file       application_hardware_model.py
+@file       application_hardware_model_v0_0.py
 @author     Matthew Yu (matthewjkyu@gmail.com)
-@brief      XXX
+@brief      Models hardware interactions for each task.
 @version    0.0.0
 @date       2022-12-09
 """
@@ -29,11 +29,11 @@ class ApplicationHardwareModel_V0_0:
         # For each task in each device and cpu, generate the hardware used.
         for device_name, device in step[1]["started_tasks"].items():
             hardware_used = set()
-            for cpu_name, (task_name, task_duration) in device.items():
+            for cpu_name, (task_name, task_duration, data) in device.items():
                 for hardware in inputs[device_name]["tasks"][task_name]["hardware"]:
                     hardware_used.add(hardware)
 
             step[1]["active_peripherals"][device_name] = list(hardware_used)
 
-    def get_model_name():
+    def get_model_name(self):
         return "ApplicationHardwareModel_V0_0"

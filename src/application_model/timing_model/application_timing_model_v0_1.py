@@ -1,22 +1,26 @@
 """_summary_
-@file       application_timing_model_v0_0.py
+@file       application_timing_model_v0_1.py
 @author     Matthew Yu (matthewjkyu@gmail.com)
 @brief      Models timing interactions between tasks.
-@version    0.0.0
+@version    0.0.1
 @date       2022-12-10
 """
 
 
-class ApplicationTimingModel_V0_0:
+class ApplicationTimingModel_V0_1:
     """_summary_
-    Tasks in a schedule are ordered logically and each task is considered 1
-    cyle regardless of true duration.
+    Tasks in a schedule are ordered temporally and each task has a given task
+    duration in cycles.
     """
 
     def __init__(self):
         pass
 
     def process_step(self, outputs, inputs):
+        # time ---------------------------------------> time + N
+        # start tasks -> running tasks -> end tasks
+        # eat deps       deduct N cycles  generate outputs
+
         executable_tasks = []
 
         # Extract the imminent task from each device.
@@ -35,14 +39,21 @@ class ApplicationTimingModel_V0_0:
                             deps_fulfilled = False
 
                     if deps_fulfilled:
-                        # NOTE: Since we assume here that each task executes for
-                        # the same duration, run all of them at once. We'll
-                        # generate outputs in the execution model.
-                        executable_tasks.append([device_name, cpu_name, task_name, 1])
+                        executable_tasks.append(
+                            [
+                                device_name,
+                                cpu_name,
+                                task_name,
+                                inputs[device_name]["tasks"][task_name]["timing"][
+                                    "level_0"
+                                ]["duration"],
+                            ]
+                        )
                     else:
                         cpu.insert(0, task_name)
 
-
+        # NOTE: Since we assume here that each task executing has a task
+        # duration, choose the next timestep based on the closest duration to 0.
         step = {
             "timestep": outputs["next_timestep"],
             "started_tasks": {},
@@ -77,4 +88,4 @@ class ApplicationTimingModel_V0_0:
             return True
 
     def get_model_name(self):
-        return "ApplicationTimingModel_V0_0"
+        return "ApplicationTimingModel_V0_1"
